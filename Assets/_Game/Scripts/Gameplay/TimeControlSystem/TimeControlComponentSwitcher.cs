@@ -13,6 +13,7 @@ public class TimeControlComponentSwitcher : MonoBehaviourBase
     private void Construct(TimeControlMediator timeControlMediator)
     {
         timeControlMediator.TimeFlowModeChanged += OnTimeFlowModeChanged;
+        OnDestroying += () => timeControlMediator.TimeFlowModeChanged -= OnTimeFlowModeChanged;
         OnTimeFlowModeChanged(TimeFlowMode.None, timeControlMediator.TimeFlowMode);
     }
 

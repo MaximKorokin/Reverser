@@ -31,8 +31,6 @@ public class GameStatesController
             return;
         }
 
-        Logger.Log(fromState, toState);
-
         fromState.Disable();
         toState.Enable();
     }
