@@ -62,6 +62,8 @@ public class GameLifetimeScope : LifetimeScope
 
     private void RegisterGameStates(IContainerBuilder builder)
     {
+        builder.Register<GameStatesController>(Lifetime.Scoped);
+
         builder.Register<MainMenuGameState>(Lifetime.Scoped);
 
         builder.Register<LevelStartGameState>(Lifetime.Scoped);

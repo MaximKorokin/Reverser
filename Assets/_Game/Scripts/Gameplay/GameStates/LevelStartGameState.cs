@@ -1,12 +1,10 @@
 ﻿public class LevelStartGameState : GameState
 {
     private readonly TimeControlMediator _timeControlMediator;
-    private readonly LevelMainGameState _levelMainGameState;
 
-    public LevelStartGameState(UIInputHandler uiInputHandler, TimeControlMediator timeControlMediator, LevelMainGameState levelMainGameState) : base(uiInputHandler)
+    public LevelStartGameState(UIInputHandler uiInputHandler, TimeControlMediator timeControlMediator) : base(uiInputHandler)
     {
         _timeControlMediator = timeControlMediator;
-        _levelMainGameState = levelMainGameState;
     }
 
     protected override void EnableInternal()
@@ -22,6 +20,6 @@
 
     protected override void OnSubmitInputRecieved()
     {
-        SwitchState(_levelMainGameState);
+        SwitchState(typeof(LevelMainGameState));
     }
 }

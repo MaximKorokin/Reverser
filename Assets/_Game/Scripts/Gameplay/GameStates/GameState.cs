@@ -1,7 +1,11 @@
-﻿public abstract class GameState
+﻿using System;
+
+public abstract class GameState
 {
     public bool IsEnabled { get; private set; } = false;
     protected readonly UIInputHandler UIInputHandler;
+
+    public event Action<GameState, Type> SwitchStateRequested;
 
     public GameState(UIInputHandler uiInputHandler)
     {
@@ -46,17 +50,9 @@
 
     protected virtual void EnableInternal() { }
 
-    public virtual bool SwitchState(GameState gameState)
+    protected void SwitchState(Type gameStateType)
     {
-        if (!IsEnabled || gameState.IsEnabled)
-        {
-            Logger.Warn($"Trying to switch {nameof(GameState)} of type {GetType()} to type {gameState.GetType()} that but conditions are not met");
-            return false;
-        }
-
-        Disable();
-        gameState.Enable();
-        return true;
+        SwitchStateRequested?.Invoke(this, gameStateType);
     }
 
     protected abstract void OnSubmitInputRecieved();

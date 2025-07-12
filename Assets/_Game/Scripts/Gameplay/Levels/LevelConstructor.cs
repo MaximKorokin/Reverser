@@ -19,6 +19,11 @@ public class LevelConstructor
         _levelPrefabs = levelPrefabs;
     }
 
+    public void Clear()
+    {
+        _levelParent.Cast<Transform>().ForEach(x => UnityEngine.Object.Destroy(x.gameObject));
+    }
+
     public void Costruct(LevelData levelData)
     {
         var levelTransforms = new List<Transform>

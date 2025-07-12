@@ -3,19 +3,16 @@
     private readonly TimeControlMediator _timeControlMediator;
     private readonly Timer _timer;
     private readonly LevelSharedContext _levelSharedContext;
-    private readonly LevelEndGameState _levelEndGameState;
 
     public LevelMainGameState(
         UIInputHandler uiInputHandler,
         Timer timer,
         LevelSharedContext levelSharedContext,
-        TimeControlMediator timeControlMediator,
-        LevelEndGameState levelEndGameState) : base(uiInputHandler)
+        TimeControlMediator timeControlMediator) : base(uiInputHandler)
     {
         _levelSharedContext = levelSharedContext;
         _timeControlMediator = timeControlMediator;
         _timer = timer;
-        _levelEndGameState = levelEndGameState;
     }
 
     protected override void EnableInternal()
@@ -39,7 +36,7 @@
 
     private void OnLevelCompleted()
     {
-        SwitchState(_levelEndGameState);
+        SwitchState(typeof(LevelEndGameState));
     }
 
     protected override void OnCancelInputRecieved()

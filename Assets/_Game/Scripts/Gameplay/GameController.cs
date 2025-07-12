@@ -3,17 +3,18 @@ using VContainer.Unity;
 
 public class GameController : ITickable, IInitializable
 {
-    private readonly MainMenuGameState _mainMenuGameState;
+    private readonly GameStatesController _gameStatesController;
 
-    public GameController(MainMenuGameState mainMenuGameState)
+    public GameController(GameStatesController gameStatesController)
     {
-        _mainMenuGameState = mainMenuGameState;
+        _gameStatesController = gameStatesController;
     }
 
     public void Initialize()
     {
         Application.targetFrameRate = 60;
-        _mainMenuGameState.Enable();
+
+        _gameStatesController.SetState(typeof(MainMenuGameState));
     }
 
     public void Tick()

@@ -7,19 +7,15 @@ public class MainMenuGameState : GameState, IDisposable
     private readonly LevelConstructor _levelConstructor;
     private readonly LevelSharedContext _levelSharedContext;
 
-    private readonly LevelStartGameState _levelStartGameState;
-
     public MainMenuGameState(
         UIInputHandler uiInputHandler,
         LevelConstructor levelConstructor,
         LevelSharedContext levelSharedContext,
-        LevelSelectionController levelSelectionController,
-        LevelStartGameState levelStartGameState) : base(uiInputHandler)
+        LevelSelectionController levelSelectionController) : base(uiInputHandler)
     {
         _levelSelectionController = levelSelectionController;
         _levelConstructor = levelConstructor;
         _levelSharedContext = levelSharedContext;
-        _levelStartGameState = levelStartGameState;
 
         _levelSelectionController.GenerateButtons();
         _levelSelectionController.gameObject.SetActive(false);
@@ -29,7 +25,7 @@ public class MainMenuGameState : GameState, IDisposable
     {
         _levelConstructor.Costruct(data);
         _levelSharedContext.LevelData = data;
-        SwitchState(_levelStartGameState);
+        SwitchState(typeof(LevelStartGameState));
     }
 
     protected override void EnableInternal()
