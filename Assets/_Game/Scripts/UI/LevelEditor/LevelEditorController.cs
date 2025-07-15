@@ -2,19 +2,32 @@
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using VContainer;
 
 public class LevelEditorController : MonoBehaviourBase
 {
     [SerializeField]
-    private RectTransform _selectableLevelObjectsParent;
+    private PointerEventsHandler _pointerEventsHandler;
     [SerializeField]
-    private SelectableGameObjectWrapper _selectableLevelObjectWrapper;
+    private LevelEditorContextButtons _levelEditorContextButtons;
+    [SerializeField]
+    private RectTransform _selectableLevelObjectsPoolParent;
+    [SerializeField]
+    private SelectableGameObjectWrapper _selectableLevelObjectWrapperPool;
+    [SerializeField]
+    private RectTransform _selectableLevelObjectsPlaceParent;
+    [SerializeField]
+    private SelectableGameObjectWrapper _selectableLevelObjectWrapperPlace;
 
     private LevelSharedContext _levelSharedContext;
-    private Transform _levelParent;
+    private LevelPrefabs _levelPrefabs;
+    private SnapPlacer _snapPlacer;
+    private GameObject _selectedPoolGameObject;
+    private SelectableGameObjectWrapper _selectedPlaceGameObjectWrapper;
 
-    private readonly SelectableElementsGroup<SelectableGameObjectWrapper> _levelObjectsSelectableGroup = new();
+    private readonly SelectableElementsGroup<SelectableGameObjectWrapper> _levelObjectsSelectablePoolGroup = new();
+    private readonly SelectableElementsGroup<SelectableGameObjectWrapper> _levelObjectsSelectablePlaceGroup = new();
 
     public event Action LoadLevelRequested;
     public event Action CloseEditorRequested;
@@ -22,22 +35,48 @@ public class LevelEditorController : MonoBehaviourBase
     [Inject]
     private void Construct(
         LevelSharedContext levelSharedContext,
-        Transform levelParent,
         LevelPrefabs levelPrefabs)
     {
         gameObject.SetActive(false);
 
         _levelSharedContext = levelSharedContext;
-        _levelParent = levelParent;
+        _levelPrefabs = levelPrefabs;
+        _snapPlacer = new(1, _selectableLevelObjectsPlaceParent);
 
-        _levelObjectsSelectableGroup.SelectedChanged += OnLevelObjectsSelectedChanged;
+        _levelObjectsSelectablePoolGroup.SelectedChanged += OnPoolLevelObjectsSelectedChanged;
+        _levelObjectsSelectablePlaceGroup.SelectedChanged += OnPlaceLevelObjectsSelectedChanged;
+        _pointerEventsHandler.PointerClickUp += OnPointerClickUp;
 
-        PopulateLevelObjects(levelPrefabs);
+        _levelEditorContextButtons.RemoveButtonClicked += OnRemoveContextButtonClicked;
+
+        PopulateLevelObjects(_levelPrefabs);
     }
 
-    private void OnLevelObjectsSelectedChanged(SelectableGameObjectWrapper selectable)
+    private void OnPoolLevelObjectsSelectedChanged(SelectableGameObjectWrapper selectable)
     {
-        Logger.Log(selectable.WrappedGameObject);
+        _selectedPoolGameObject = selectable == null ? null : selectable.WrappedGameObject;
+    }
+
+    private void OnPlaceLevelObjectsSelectedChanged(SelectableGameObjectWrapper selectable)
+    {
+        _selectedPlaceGameObjectWrapper = selectable;
+        var selectedGameObject = selectable == null ? null : selectable.WrappedGameObject;
+        if (selectedGameObject != null) _levelEditorContextButtons.Show(selectedGameObject);
+    }
+
+    private void OnPointerClickUp(PointerEventData eventData)
+    {
+        if (_selectedPoolGameObject != null)
+        {
+            var levelObject = CreateSelectableGameObjectWrapper(_selectableLevelObjectWrapperPlace, _selectedPoolGameObject, _selectableLevelObjectsPlaceParent, _levelObjectsSelectablePlaceGroup);
+            _snapPlacer.Place(levelObject.transform as RectTransform, eventData.pointerCurrentRaycast.worldPosition);
+        }
+    }
+
+    private void OnRemoveContextButtonClicked()
+    {
+        _levelObjectsSelectablePlaceGroup.RemoveSelectable(_selectedPlaceGameObjectWrapper);
+        Destroy(_selectedPlaceGameObjectWrapper.gameObject);
     }
 
     private void PopulateLevelObjects(LevelPrefabs levelPrefabs)
@@ -48,13 +87,26 @@ public class LevelEditorController : MonoBehaviourBase
             .Select(x => x.GetValue(levelPrefabs))
             .Where(x => x is Component or GameObject))
         {
-            var wrapper = Instantiate(_selectableLevelObjectWrapper);
-            wrapper.transform.SetParent(_selectableLevelObjectsParent, false);
-            _levelObjectsSelectableGroup.AddSelectable(wrapper);
+            GameObject toWrap;
+            if (behaviour is GameObject obj) toWrap = obj;
+            else if (behaviour is Component component) toWrap = component.gameObject;
+            else toWrap = null;
 
-            if (behaviour is GameObject obj) wrapper.SetGameObject(obj);
-            else if (behaviour is Component component) wrapper.SetGameObject(component.gameObject);
+            CreateSelectableGameObjectWrapper(_selectableLevelObjectWrapperPool, toWrap, _selectableLevelObjectsPoolParent, _levelObjectsSelectablePoolGroup);
         }
+    }
+
+    private static SelectableGameObjectWrapper CreateSelectableGameObjectWrapper(
+        SelectableGameObjectWrapper wrapperPrefab,
+        GameObject toWrap,
+        RectTransform parent,
+        SelectableElementsGroup<SelectableGameObjectWrapper> wrapperGroup)
+    {
+        var wrapper = Instantiate(wrapperPrefab);
+        wrapper.transform.SetParent(parent, false);
+        wrapperGroup.AddSelectable(wrapper);
+        wrapper.SetGameObject(toWrap);
+        return wrapper;
     }
 
     public void RequestCloseLevelEditor()
@@ -64,7 +116,10 @@ public class LevelEditorController : MonoBehaviourBase
 
     public void LoadLevel()
     {
-        var levelData = new LevelData();
+        var levelData = new LevelData()
+        {
+            LevelHalfDuration = 10,
+        };
         _levelSharedContext.LevelData = levelData;
         LoadLevelRequested?.Invoke();
     }

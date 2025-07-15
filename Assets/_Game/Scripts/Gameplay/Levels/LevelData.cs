@@ -5,15 +5,15 @@ using UnityEngine;
 public class LevelData
 {
     [field: SerializeField]
-    public float LevelHalfDuration {  get; private set; }
+    public float LevelHalfDuration {  get; set; }
     [field: SerializeField]
-    public Vector2[] LevelGroundPositions {  get; private set; }
+    public Vector2[] LevelGroundPositions {  get; set; }
     [field: SerializeField]
-    public Vector2 LevelEndDoorPosition {  get; private set; }
+    public Vector2 LevelEndDoorPosition {  get; set; }
     [field: SerializeField]
-    public Vector2 Character1Position {  get; private set; }
+    public Vector2 Character1Position {  get; set; }
     [field: SerializeField]
-    public Vector2 Character2Position {  get; private set; }
+    public Vector2 Character2Position {  get; set; }
     [field: SerializeField]
-    public Vector2[] PickableBoxesPositions {  get; private set; }
+    public Vector2[] PickableBoxesPositions {  get; set; }
 }

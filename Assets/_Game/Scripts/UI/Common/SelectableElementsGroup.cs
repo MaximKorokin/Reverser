@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 public class SelectableElementsGroup<T> where T : SelectableElement
@@ -10,15 +11,26 @@ public class SelectableElementsGroup<T> where T : SelectableElement
     public void AddSelectable(T selectableElement)
     {
         _selectableElements.Add(selectableElement);
-        selectableElement.SelectionChanged += (e, s) => OnSelectableElementSelectionChanged((T)e, s);
+        selectableElement.SelectionChanged += OnSelectableElementSelectionChanged;
     }
 
+    public void RemoveSelectable(T selectableElement)
+    {
+        _selectableElements.Remove(selectableElement);
+        selectableElement.SelectionChanged -= OnSelectableElementSelectionChanged;
+    }
+
+    private void OnSelectableElementSelectionChanged(SelectableElement selectableElement, bool selected) => OnSelectableElementSelectionChanged((T)selectableElement, selected);
     private void OnSelectableElementSelectionChanged(T selectableElement, bool selected)
     {
         if (selected)
         {
-            _selectableElements.ForEach(x => x.SetSelection(false));
+            _selectableElements.Except(selectableElement.Yield()).ForEach(x => x.SetSelection(false, true));
             SelectedChanged?.Invoke(selectableElement);
+        }
+        else
+        {
+            SelectedChanged?.Invoke(null);
         }
     }
 }

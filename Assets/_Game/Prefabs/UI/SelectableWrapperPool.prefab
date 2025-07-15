@@ -161,7 +161,7 @@ GameObject:
   - component: {fileID: 8569663142805714580}
   - component: {fileID: 7430663051944904091}
   m_Layer: 5
-  m_Name: SelectableWrapper
+  m_Name: SelectableWrapperPool
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

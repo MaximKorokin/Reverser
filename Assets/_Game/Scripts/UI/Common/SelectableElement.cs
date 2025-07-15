@@ -9,10 +9,10 @@ public class SelectableElement : MonoBehaviourBase, IPointerDownHandler
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        SetSelection(!_isSelected);
+        SetSelection(!_isSelected, false);
     }
 
-    public virtual void SetSelection(bool selection, bool silent = false)
+    public virtual void SetSelection(bool selection, bool silent)
     {
         var previousValue = _isSelected;
         _isSelected = selection;
