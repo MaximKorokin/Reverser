@@ -4,17 +4,17 @@ using UnityEngine;
 public class MainMenuGameState : GameState, IDisposable
 {
     private readonly LevelSelectionController _levelSelectionController;
-    private readonly LevelConstructor _levelConstructor;
+    private readonly LevelEditorOpenButton _levelEditorOpenButton;
     private readonly LevelSharedContext _levelSharedContext;
 
     public MainMenuGameState(
         UIInputHandler uiInputHandler,
-        LevelConstructor levelConstructor,
-        LevelSharedContext levelSharedContext,
-        LevelSelectionController levelSelectionController) : base(uiInputHandler)
+        LevelSelectionController levelSelectionController,
+        LevelEditorOpenButton levelEditorOpenButton,
+        LevelSharedContext levelSharedContext) : base(uiInputHandler)
     {
         _levelSelectionController = levelSelectionController;
-        _levelConstructor = levelConstructor;
+        _levelEditorOpenButton = levelEditorOpenButton;
         _levelSharedContext = levelSharedContext;
 
         _levelSelectionController.GenerateButtons();
@@ -23,9 +23,13 @@ public class MainMenuGameState : GameState, IDisposable
 
     private void OnLevelSelected(LevelData data)
     {
-        _levelConstructor.Costruct(data);
         _levelSharedContext.LevelData = data;
         SwitchState(typeof(LevelStartGameState));
+    }
+
+    private void OnLevelEditorOpenRequested()
+    {
+        SwitchState(typeof(LevelEditorGameState));
     }
 
     protected override void EnableInternal()
@@ -35,6 +39,10 @@ public class MainMenuGameState : GameState, IDisposable
         _levelSelectionController.gameObject.SetActive(true);
         _levelSelectionController.LevelSelected -= OnLevelSelected;
         _levelSelectionController.LevelSelected += OnLevelSelected;
+
+        _levelEditorOpenButton.gameObject.SetActive(true);
+        _levelEditorOpenButton.LevelEditorOpenRequested -= OnLevelEditorOpenRequested;
+        _levelEditorOpenButton.LevelEditorOpenRequested += OnLevelEditorOpenRequested;
     }
 
     protected override void DisableInternal()
@@ -43,6 +51,9 @@ public class MainMenuGameState : GameState, IDisposable
 
         _levelSelectionController.gameObject.SetActive(false);
         _levelSelectionController.LevelSelected -= OnLevelSelected;
+
+        _levelEditorOpenButton.gameObject.SetActive(false);
+        _levelEditorOpenButton.LevelEditorOpenRequested -= OnLevelEditorOpenRequested;
     }
 
     protected override void OnCancelInputRecieved()

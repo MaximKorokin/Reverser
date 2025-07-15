@@ -13,7 +13,7 @@ public class LevelEndZone : MonoBehaviourBase
 
     private void OnTriggerEnter2D(Collider2D collider)
     {
-        if (collider.TryGetComponent<Character>(out var character) && character.CanCompleteLevel)
+        if (collider.TryGetComponent<Character>(out var character))
         {
             _levelSharedContext.InvokeLevelCompleted();
         }

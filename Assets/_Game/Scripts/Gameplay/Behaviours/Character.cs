@@ -4,9 +4,6 @@ using VContainer;
 
 public class Character : MonoBehaviourBase
 {
-    [field: SerializeField]
-    public bool CanCompleteLevel{ get; private set; }
-    [Space]
     [SerializeField]
     private Collider2D _groundCheck;
     [SerializeField]
@@ -48,7 +45,7 @@ public class Character : MonoBehaviourBase
         base.Awake();
 
         _rigidbody = GetRequiredComponent<Rigidbody2D>();
-        _animator = transform.GetChild(0).GetRequiredComponent<Animator>();
+        _animator = GetRequiredComponentInChildren<Animator>();
     }
 
     protected override void Update()

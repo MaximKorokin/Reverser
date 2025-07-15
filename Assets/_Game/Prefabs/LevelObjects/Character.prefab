@@ -74,7 +74,7 @@ CapsuleCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.5, y: 0.8}
+  m_Size: {x: 0.5, y: 0.7}
   m_Direction: 0
 --- !u!50 &254418332203549060
 Rigidbody2D:
@@ -115,7 +115,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 92313c6f455621b45a6d38f5d23a31c6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  <CanCompleteLevel>k__BackingField: 0
   _groundCheck: {fileID: 2953962456995239470}
   _moveSpeed: 6
   _jumpHeight: 1.2
@@ -336,7 +335,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 659658461, guid: 6a39cbb846aa6b445b6a5ee9b85952ec, type: 3}
+  m_Sprite: {fileID: 1859698839, guid: 15e55b56b6f6fc944b3df13fa80351de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

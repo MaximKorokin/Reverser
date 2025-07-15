@@ -9,8 +9,9 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3982384688715635893}
-  - component: {fileID: 498294495936090159}
+  - component: {fileID: 374023838629537765}
   - component: {fileID: 2464183013942728098}
+  - component: {fileID: -7040294852624238164}
   m_Layer: 0
   m_Name: LevelEndDoor
   m_TagString: Untagged
@@ -34,8 +35,8 @@ Transform:
   - {fileID: 1052861447052271900}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!61 &498294495936090159
-BoxCollider2D:
+--- !u!58 &374023838629537765
+CircleCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -69,17 +70,7 @@ BoxCollider2D:
   m_CompositeOperation: 0
   m_CompositeOrder: 0
   m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
+  m_Radius: 0.5
 --- !u!114 &2464183013942728098
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -92,6 +83,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 259de8a9d6beb724085611882c8f9ee1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &-7040294852624238164
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6705964907105532572}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 14122ea4eeba59f4ab19a5194c3e6bae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _timeFlowModeInterpretation: 1
+  _components: 2
 --- !u!1 &7189139777538706486
 GameObject:
   m_ObjectHideFlags: 0
@@ -168,7 +173,7 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: -100
-  m_Sprite: {fileID: 7482667652216324306, guid: 120692a57acd63e4fb5973fafacc15a4, type: 3}
+  m_Sprite: {fileID: -776204603, guid: 15e55b56b6f6fc944b3df13fa80351de, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

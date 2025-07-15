@@ -37,9 +37,7 @@ MonoBehaviour:
     - {x: 0, y: -2.5}
     - {x: 1, y: -2.5}
     - {x: 2, y: -2.5}
-    <LevelEndDoorPosition>k__BackingField: {x: 0, y: 0}
+    <LevelEndDoorPosition>k__BackingField: {x: 0, y: -1.5}
     <Character1Position>k__BackingField: {x: -1, y: 3}
     <Character2Position>k__BackingField: {x: 1, y: 3}
-    <PickableBoxesPositions>k__BackingField:
-    - {x: -2, y: 0}
-    - {x: 2, y: 0}
+    <PickableBoxesPositions>k__BackingField: []

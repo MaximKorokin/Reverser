@@ -20,7 +20,7 @@ public class TimeControlComponentSwitcher : MonoBehaviourBase
     private void OnTimeFlowModeChanged(TimeFlowMode previousMode, TimeFlowMode newMode)
     {
         if (previousMode == newMode) return;
-        
+
         var enabled = _timeFlowModeInterpretation.InterpretTimeFlowMode(newMode) == TimeFlowMode.Forward;
 
         if (_components.HasFlag(TimeControlBehaviour.Collider2D) && TryGetComponent<Collider2D>(out var collider))

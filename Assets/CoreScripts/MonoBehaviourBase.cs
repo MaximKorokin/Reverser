@@ -40,8 +40,18 @@ public abstract class MonoBehaviourBase : MonoBehaviour
         OnDestroying?.Invoke();
     }
 
-    protected virtual T GetRequiredComponent<T>() where T : Component
+    public virtual T GetRequiredComponent<T>() where T : Component
     {
         return RequireUtils.GetRequiredComponent<T>(gameObject);
+    }
+
+    public virtual T GetRequiredComponentInChildren<T>() where T : Component
+    {
+        return RequireUtils.GetRequiredComponentInChildren<T>(gameObject);
+    }
+
+    public virtual T GetRequiredComponentOrInChildren<T>() where T : Component
+    {
+        return RequireUtils.GetRequiredComponentOrInChildren<T>(gameObject);
     }
 }

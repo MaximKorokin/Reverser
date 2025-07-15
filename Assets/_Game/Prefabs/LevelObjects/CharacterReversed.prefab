@@ -27,7 +27,7 @@ PrefabInstance:
     - target: {fileID: 7662312965303645118, guid: 6f8ca5ef3cf742c429eb4e196a23211e, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: -1010193477, guid: 6a39cbb846aa6b445b6a5ee9b85952ec, type: 3}
+      objectReference: {fileID: 371026955, guid: 15e55b56b6f6fc944b3df13fa80351de, type: 3}
     - target: {fileID: 7949333531014794644, guid: 6f8ca5ef3cf742c429eb4e196a23211e, type: 3}
       propertyPath: m_Controller
       value: 
@@ -39,6 +39,10 @@ PrefabInstance:
     - target: {fileID: 8510072030272240532, guid: 6f8ca5ef3cf742c429eb4e196a23211e, type: 3}
       propertyPath: <CanCompleteLevel>k__BackingField
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8674120248591804348, guid: 6f8ca5ef3cf742c429eb4e196a23211e, type: 3}
+      propertyPath: m_Size.y
+      value: 0.7
       objectReference: {fileID: 0}
     - target: {fileID: 9087202246526189949, guid: 6f8ca5ef3cf742c429eb4e196a23211e, type: 3}
       propertyPath: m_LocalPosition.x

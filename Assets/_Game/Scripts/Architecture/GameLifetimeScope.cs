@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using VContainer;
 using VContainer.Unity;
@@ -23,7 +24,6 @@ public class GameLifetimeScope : LifetimeScope
         RegisterTimeControlSystem(builder);
 
         builder.RegisterInstance(_levelPrefabs);
-        builder.Register(resolver => resolver.Instantiate(_levelPrefabs.Character1), Lifetime.Scoped);
     }
 
     private void RegisterLevelConstructing(IContainerBuilder builder)
@@ -41,6 +41,8 @@ public class GameLifetimeScope : LifetimeScope
     private void RegisterUI(IContainerBuilder builder)
     {
         builder.RegisterComponentInHierarchy<LevelSelectionController>();
+        builder.RegisterComponentInHierarchy<LevelEditorOpenButton>();
+        builder.RegisterComponentInHierarchy<LevelEditorController>();
 
         builder.RegisterFactory<int, LevelData>(resolver => i => _levelDataProvider.GetLevelData(i), Lifetime.Transient);
     }
@@ -64,10 +66,14 @@ public class GameLifetimeScope : LifetimeScope
     {
         builder.Register<GameStatesController>(Lifetime.Scoped);
 
+        builder.RegisterFactory<Type, GameState>(resolver => t => resolver.Resolve(t) as GameState, Lifetime.Scoped);
+
         builder.Register<MainMenuGameState>(Lifetime.Scoped);
 
         builder.Register<LevelStartGameState>(Lifetime.Scoped);
         builder.Register<LevelMainGameState>(Lifetime.Scoped);
         builder.Register<LevelEndGameState>(Lifetime.Scoped);
+
+        builder.Register<LevelEditorGameState>(Lifetime.Scoped);
     }
 }
