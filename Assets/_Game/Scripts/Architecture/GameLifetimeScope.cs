@@ -19,11 +19,13 @@ public class GameLifetimeScope : LifetimeScope
 
         RegisterUI(builder);
         RegisterLevelConstructing(builder);
+        RegisterLevelEditor(builder);
         RegisterGameStates(builder);
         RegisterInput(builder);
         RegisterTimeControlSystem(builder);
 
         builder.RegisterInstance(_levelPrefabs);
+        builder.Register<LevelPrefabsManager>(Lifetime.Scoped);
     }
 
     private void RegisterLevelConstructing(IContainerBuilder builder)
@@ -35,14 +37,18 @@ public class GameLifetimeScope : LifetimeScope
         builder.Register<LevelSharedContext>(Lifetime.Scoped);
         builder.RegisterInstance(_levelDataProvider);
 
-        builder.RegisterFactory<Component, Vector2, Component>(resolver => (c, v) => resolver.Instantiate(c, v, Quaternion.identity), Lifetime.Singleton);
+        builder.RegisterFactory<GameObject, Vector2, GameObject>(resolver => (c, v) => resolver.Instantiate(c, v, Quaternion.identity), Lifetime.Singleton);
+    }
+
+    private void RegisterLevelEditor(IContainerBuilder builder)
+    {
+        builder.RegisterComponentInHierarchy<LevelEditorOpenButton>();
+        builder.RegisterComponentInHierarchy<LevelEditorController>();
     }
 
     private void RegisterUI(IContainerBuilder builder)
     {
         builder.RegisterComponentInHierarchy<LevelSelectionController>();
-        builder.RegisterComponentInHierarchy<LevelEditorOpenButton>();
-        builder.RegisterComponentInHierarchy<LevelEditorController>();
 
         builder.RegisterFactory<int, LevelData>(resolver => i => _levelDataProvider.GetLevelData(i), Lifetime.Transient);
     }

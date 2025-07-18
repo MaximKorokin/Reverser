@@ -6,6 +6,8 @@ public class SelectableElementsGroup<T> where T : SelectableElement
 {
     private readonly HashSet<T> _selectableElements = new();
 
+    public IEnumerable<T> SelectableElements => _selectableElements;
+
     public event Action<T> SelectedChanged;
 
     public void AddSelectable(T selectableElement)

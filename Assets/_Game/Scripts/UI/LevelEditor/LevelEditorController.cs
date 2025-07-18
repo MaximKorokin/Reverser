@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using UnityEngine;
@@ -21,7 +22,7 @@ public class LevelEditorController : MonoBehaviourBase
     private SelectableGameObjectWrapper _selectableLevelObjectWrapperPlace;
 
     private LevelSharedContext _levelSharedContext;
-    private LevelPrefabs _levelPrefabs;
+    private LevelPrefabsManager _prefabsManager;
     private SnapPlacer _snapPlacer;
     private GameObject _selectedPoolGameObject;
     private SelectableGameObjectWrapper _selectedPlaceGameObjectWrapper;
@@ -35,12 +36,12 @@ public class LevelEditorController : MonoBehaviourBase
     [Inject]
     private void Construct(
         LevelSharedContext levelSharedContext,
-        LevelPrefabs levelPrefabs)
+        LevelPrefabsManager prefabsManager)
     {
         gameObject.SetActive(false);
 
         _levelSharedContext = levelSharedContext;
-        _levelPrefabs = levelPrefabs;
+        _prefabsManager = prefabsManager;
         _snapPlacer = new(1, _selectableLevelObjectsPlaceParent);
 
         _levelObjectsSelectablePoolGroup.SelectedChanged += OnPoolLevelObjectsSelectedChanged;
@@ -49,7 +50,7 @@ public class LevelEditorController : MonoBehaviourBase
 
         _levelEditorContextButtons.RemoveButtonClicked += OnRemoveContextButtonClicked;
 
-        PopulateLevelObjects(_levelPrefabs);
+        PopulateLevelObjects(_prefabsManager.Prefabs);
     }
 
     private void OnPoolLevelObjectsSelectedChanged(SelectableGameObjectWrapper selectable)
@@ -79,19 +80,10 @@ public class LevelEditorController : MonoBehaviourBase
         Destroy(_selectedPlaceGameObjectWrapper.gameObject);
     }
 
-    private void PopulateLevelObjects(LevelPrefabs levelPrefabs)
+    private void PopulateLevelObjects(IEnumerable<GameObject> levelPrefabs)
     {
-        foreach (var behaviour in levelPrefabs
-            .GetType()
-            .GetAllProperties(flags: BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
-            .Select(x => x.GetValue(levelPrefabs))
-            .Where(x => x is Component or GameObject))
+        foreach (var toWrap in levelPrefabs)
         {
-            GameObject toWrap;
-            if (behaviour is GameObject obj) toWrap = obj;
-            else if (behaviour is Component component) toWrap = component.gameObject;
-            else toWrap = null;
-
             CreateSelectableGameObjectWrapper(_selectableLevelObjectWrapperPool, toWrap, _selectableLevelObjectsPoolParent, _levelObjectsSelectablePoolGroup);
         }
     }
@@ -116,10 +108,11 @@ public class LevelEditorController : MonoBehaviourBase
 
     public void LoadLevel()
     {
-        var levelData = new LevelData()
-        {
-            LevelHalfDuration = 10,
-        };
+        var levelData = _prefabsManager.ToLevelData(
+            _levelObjectsSelectablePlaceGroup.SelectableElements.Select(x => (x.WrappedGameObject, (Vector2)x.transform.position)));
+        levelData.LevelHalfDuration = 10;
+        Logger.Log(JsonUtility.ToJson(levelData));
+
         _levelSharedContext.LevelData = levelData;
         LoadLevelRequested?.Invoke();
     }
