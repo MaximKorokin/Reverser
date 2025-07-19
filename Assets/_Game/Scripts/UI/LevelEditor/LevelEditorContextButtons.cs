@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LevelEditorContextButtons : MonoBehaviourBase
+public class LevelEditorContextButtons : UIBehaviourBase
 {
     [SerializeField]
     private Button _removeButton;
@@ -24,16 +24,11 @@ public class LevelEditorContextButtons : MonoBehaviourBase
         });
     }
 
-    public void Show(GameObject obj)
+    public override void Show()
     {
+        base.Show();
         _removeButton.gameObject.SetActive(true);
         _bindButton.gameObject.SetActive(false);
         _unbindButton.gameObject.SetActive(false);
-        gameObject.SetActive(true);
-    }
-
-    public void Hide()
-    {
-        gameObject.SetActive(false);
     }
 }
