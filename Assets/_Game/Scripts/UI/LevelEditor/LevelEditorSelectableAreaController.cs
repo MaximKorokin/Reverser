@@ -13,10 +13,10 @@ public class LevelEditorSelectableAreaController : UIBehaviourBase
         Show();
     }
 
-    protected SelectableGameObjectWrapper CreateSelectableGameObjectWrapper(GameObject toWrap, RectTransform parent)
+    protected SelectableGameObjectWrapper CreateSelectableGameObjectWrapper(GameObject toWrap)
     {
         var wrapper = Instantiate(_selectableLevelObjectWrapperPrefab);
-        wrapper.transform.SetParent(parent, false);
+        wrapper.transform.SetParent(transform, false);
         LevelObjectsSelectableGroup.AddSelectable(wrapper);
         wrapper.SetGameObject(toWrap);
         return wrapper;

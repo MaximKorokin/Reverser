@@ -1,7 +1,7 @@
 ﻿using System;
 using UnityEngine.EventSystems;
 
-public class SelectableElement : MonoBehaviourBase, IPointerDownHandler
+public class SelectableElement : UIBehaviourBase, IPointerDownHandler
 {
     private bool _isSelected;
 

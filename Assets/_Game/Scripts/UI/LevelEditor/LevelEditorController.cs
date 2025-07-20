@@ -11,6 +11,8 @@ public class LevelEditorController : MonoBehaviourBase
     private LevelEditorPlaceAreaController _levelEditorPlaceAreaController;
     [SerializeField]
     private LevelEditorPoolAreaController _levelEditorPoolAreaController;
+    [SerializeField]
+    private LevelEditorInfoAreaController _levelEditorInfoAreaController;
 
     private LevelSharedContext _levelSharedContext;
     private LevelPrefabsManager _prefabsManager;
@@ -26,12 +28,19 @@ public class LevelEditorController : MonoBehaviourBase
         gameObject.SetActive(false);
 
         _levelSharedContext = levelSharedContext;
+
         _prefabsManager = prefabsManager;
 
-        _levelEditorDataExchange.LevelDataImportRequested += OnLevelDataImportRequested;
+        _levelEditorDataExchange.LevelDataImportRequested += SetLevelData;
 
         _levelEditorPoolAreaController.PopulateLevelObjects(_prefabsManager.Prefabs);
         _levelEditorPoolAreaController.SelectedPrefabChanged += OnSelectedPoolPrefabChanged;
+    }
+
+    protected override void OnEnable()
+    {
+        base.OnEnable();
+        if (_levelSharedContext.LevelData != null) SetLevelData(_levelSharedContext.LevelData);
     }
 
     private void OnSelectedPoolPrefabChanged(GameObject prefab)
@@ -39,15 +48,16 @@ public class LevelEditorController : MonoBehaviourBase
         _levelEditorPlaceAreaController.SetPlacePrefab(prefab);
     }
 
-    private void OnLevelDataImportRequested(LevelData levelData)
+    private void SetLevelData(LevelData levelData)
     {
         _levelEditorPlaceAreaController.SetPositionedPrefabs(levelData.LevelObjects.Select(x => (_prefabsManager.ToLevelPrefab(x.Name), x.Position)));
+        _levelEditorInfoAreaController.SetLevelData(levelData);
     }
 
     private LevelData ComposeLevelData()
     {
-        var levelData = _prefabsManager.ToLevelData(_levelEditorPlaceAreaController.GetPositionedPrefabs());
-        levelData.LevelHalfDuration = 10;
+        var levelData = _levelEditorInfoAreaController.GetLevelData();
+        levelData.LevelObjects = _prefabsManager.ToLevelObjects(_levelEditorPlaceAreaController.GetPositionedPrefabs());
         return levelData;
     }
 

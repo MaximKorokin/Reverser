@@ -9,18 +9,15 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
     private PointerEventsHandler _pointerEventsHandler;
     [SerializeField]
     private LevelEditorContextButtons _levelEditorContextButtons;
-    [SerializeField]
-    private RectTransform _selectableLevelObjectsPlaceParent;
 
-    private SnapPlacer _snapPlacer;
+    private SnapPlacer SnapPlacer => GetLazy(() => new SnapPlacer(1, RectTransform));
+
     private SelectableGameObjectWrapper _selectedPlaceGameObjectWrapper;
     private GameObject _placePrefab;
 
-    protected override void Start()
+    protected override void Awake()
     {
-        base.Start();
-
-        _snapPlacer = new(1, _selectableLevelObjectsPlaceParent);
+        base.Awake();
 
         _pointerEventsHandler.PointerClickUp += OnPointerClickUp;
         _levelEditorContextButtons.RemoveButtonClicked += OnRemoveContextButtonClicked;
@@ -28,10 +25,10 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
         LevelObjectsSelectableGroup.SelectedChanged += OnPlaceLevelObjectsSelectedChanged;
     }
 
-    protected SelectableGameObjectWrapper CreateSelectableGameObjectWrapper(GameObject toWrap, RectTransform parent, Vector2 worldPosition)
+    protected SelectableGameObjectWrapper CreateSelectableGameObjectWrapper(GameObject toWrap, Vector2 worldPosition)
     {
-        var wrapper = CreateSelectableGameObjectWrapper(toWrap, parent);
-        _snapPlacer.Place(wrapper.transform as RectTransform, worldPosition);
+        var wrapper = CreateSelectableGameObjectWrapper(toWrap);
+        SnapPlacer.Place(wrapper.transform as RectTransform, worldPosition);
         return wrapper;
     }
 
@@ -39,7 +36,7 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
     {
         if (_placePrefab != null)
         {
-            CreateSelectableGameObjectWrapper(_placePrefab, _selectableLevelObjectsPlaceParent, eventData.pointerCurrentRaycast.worldPosition);
+            CreateSelectableGameObjectWrapper(_placePrefab, eventData.pointerCurrentRaycast.worldPosition);
         }
     }
 
@@ -73,15 +70,15 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
     {
         LevelObjectsSelectableGroup.SelectableElements
             .ToArray()
-            .ForEach(x => Logger.Log(111))
-            .ForEach(LevelObjectsSelectableGroup.RemoveSelectable)
-            .ForEach(x => Logger.Log(222))
-            .ForEach(x => Destroy(x.gameObject))
-            .Count(); // Triggers linq
+            .ForEach(selectable =>
+            {
+                LevelObjectsSelectableGroup.RemoveSelectable(selectable);
+                Destroy(selectable.gameObject);
+            });
 
         foreach (var (prefab, position) in positionedPrefabs)
         {
-            CreateSelectableGameObjectWrapper(prefab, _selectableLevelObjectsPlaceParent, position);
+            CreateSelectableGameObjectWrapper(prefab, position);
         }
     }
 }

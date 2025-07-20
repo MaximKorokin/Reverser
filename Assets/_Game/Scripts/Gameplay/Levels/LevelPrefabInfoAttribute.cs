@@ -3,11 +3,9 @@
 public class LevelPrefabInfoAttribute : Attribute
 {
     public readonly string Name;
-    public readonly bool IsRequired;
 
-    public LevelPrefabInfoAttribute(string name, bool isRequired)
+    public LevelPrefabInfoAttribute(string name)
     {
         Name = name;
-        IsRequired = isRequired;
     }
 }

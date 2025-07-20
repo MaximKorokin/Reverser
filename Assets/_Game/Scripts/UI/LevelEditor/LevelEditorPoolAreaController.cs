@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class LevelEditorPoolAreaController : LevelEditorSelectableAreaController
 {
-    [SerializeField]
-    private RectTransform _selectableLevelObjectsPoolParent;
-
     public event Action<GameObject> SelectedPrefabChanged;
     private GameObject _selectedPoolGameObject;
 
@@ -31,7 +28,7 @@ public class LevelEditorPoolAreaController : LevelEditorSelectableAreaController
     {
         foreach (var prefab in levelPrefabs)
         {
-            CreateSelectableGameObjectWrapper(prefab, _selectableLevelObjectsPoolParent);
+            CreateSelectableGameObjectWrapper(prefab);
         }
     }
 }

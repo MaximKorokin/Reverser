@@ -17,7 +17,7 @@ public static class ReflectionUtils
         return (T)Activator.CreateInstance(type, constructorArgs);
     }
 
-    public static IEnumerable<FieldInfo> GetAllFields(this Type type, bool recursive, Type recursiveUpTo = null, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
+    public static IEnumerable<FieldInfo> GetAllFields(this Type type, bool recursive = false, Type recursiveUpTo = null, BindingFlags flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static | BindingFlags.Instance | BindingFlags.DeclaredOnly)
     {
         if (type == null || type == recursiveUpTo)
         {

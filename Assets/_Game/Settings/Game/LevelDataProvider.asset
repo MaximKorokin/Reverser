@@ -13,31 +13,5 @@ MonoBehaviour:
   m_Name: LevelDataProvider
   m_EditorClassIdentifier: 
   _levels:
-  - <LevelHalfDuration>k__BackingField: 10
-    <LevelGroundPositions>k__BackingField:
-    - {x: -4, y: -2.5}
-    - {x: -3, y: -2.5}
-    - {x: -2, y: -2.5}
-    - {x: -1, y: -2.5}
-    - {x: 0, y: -2.5}
-    - {x: 1, y: -2.5}
-    - {x: 2, y: -2.5}
-    - {x: 3, y: -2.5}
-    - {x: 4, y: -2.5}
-    <LevelEndDoorPosition>k__BackingField: {x: 0, y: 2}
-    <Character1Position>k__BackingField: {x: -3, y: 3}
-    <Character2Position>k__BackingField: {x: 3, y: 3}
-    <PickableBoxesPositions>k__BackingField:
-    - {x: -4, y: -1.5}
-    - {x: -2, y: -1.5}
-  - <LevelHalfDuration>k__BackingField: 2
-    <LevelGroundPositions>k__BackingField:
-    - {x: -2, y: -2.5}
-    - {x: -1, y: -2.5}
-    - {x: 0, y: -2.5}
-    - {x: 1, y: -2.5}
-    - {x: 2, y: -2.5}
-    <LevelEndDoorPosition>k__BackingField: {x: 0, y: -1.5}
-    <Character1Position>k__BackingField: {x: -1, y: 3}
-    <Character2Position>k__BackingField: {x: 1, y: 3}
-    <PickableBoxesPositions>k__BackingField: []
+  - '{"LevelHalfDuration":10.0,"LevelObjects":[{"Name":"Ground","Position":{"x":-6.0,"y":0.0}},{"Name":"Ground","Position":{"x":-4.0,"y":-2.0}},{"Name":"Ground","Position":{"x":-3.0,"y":-2.0}},{"Name":"Ground","Position":{"x":-2.0,"y":-2.0}},{"Name":"Ground","Position":{"x":-1.0,"y":-2.0}},{"Name":"Ground","Position":{"x":0.0,"y":-2.0}},{"Name":"Ground","Position":{"x":1.0,"y":-2.0}},{"Name":"Ground","Position":{"x":-2.0,"y":2.0}},{"Name":"Ground","Position":{"x":-1.0,"y":2.0}},{"Name":"Ground","Position":{"x":0.0,"y":2.0}},{"Name":"Character","Position":{"x":-2.0,"y":3.0}},{"Name":"PickableBox","Position":{"x":-1.0,"y":3.0}},{"Name":"Ground","Position":{"x":-5.0,"y":0.0}},{"Name":"Ground","Position":{"x":-7.0,"y":0.0}},{"Name":"LevelEndZone","Position":{"x":-6.0,"y":1.0}},{"Name":"CharacterReversed","Position":{"x":-1.0,"y":-1.0}}]}'
+  - '{"LevelHalfDuration":10.0,"LevelObjects":[{"Name":"Ground","Position":{"x":-7.0,"y":1.0}},{"Name":"Ground","Position":{"x":-4.0,"y":-2.0}},{"Name":"Ground","Position":{"x":-3.0,"y":-2.0}},{"Name":"Ground","Position":{"x":-2.0,"y":-2.0}},{"Name":"Ground","Position":{"x":-1.0,"y":-2.0}},{"Name":"Ground","Position":{"x":0.0,"y":-2.0}},{"Name":"Ground","Position":{"x":1.0,"y":-2.0}},{"Name":"Ground","Position":{"x":-2.0,"y":2.0}},{"Name":"Ground","Position":{"x":-1.0,"y":2.0}},{"Name":"Ground","Position":{"x":0.0,"y":2.0}},{"Name":"Character","Position":{"x":-2.0,"y":3.0}},{"Name":"PickableBox","Position":{"x":-1.0,"y":3.0}},{"Name":"LevelEndZone","Position":{"x":-6.0,"y":2.0}},{"Name":"Ground","Position":{"x":-5.0,"y":1.0}},{"Name":"Ground","Position":{"x":-6.0,"y":1.0}},{"Name":"CharacterReversed","Position":{"x":-1.0,"y":-1.0}}]}'

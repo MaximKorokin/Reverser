@@ -1,3 +1,4 @@
+using System.Globalization;
 using UnityEngine;
 using VContainer.Unity;
 
@@ -12,6 +13,7 @@ public class GameController : ITickable, IInitializable
 
     public void Initialize()
     {
+        CultureInfo.CurrentCulture = new CultureInfo("en-US");
         Application.targetFrameRate = 60;
 
         _gameStatesController.SetState(typeof(MainMenuGameState));

@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public abstract class MonoBehaviourBase : MonoBehaviour
@@ -53,5 +54,12 @@ public abstract class MonoBehaviourBase : MonoBehaviour
     public virtual T GetRequiredComponentOrInChildren<T>() where T : Component
     {
         return RequireUtils.GetRequiredComponentOrInChildren<T>(gameObject);
+    }
+
+    private readonly Dictionary<Delegate, object> _lazyCache = new();
+
+    protected T GetLazy<T>(Func<T> factory)
+    {
+        return (T)_lazyCache.GetOrAdd(factory, () => factory());
     }
 }

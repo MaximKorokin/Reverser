@@ -4,42 +4,36 @@ using System.Linq;
 
 public static class EnumerableExtensions
 {
-    public static IEnumerable<T> ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
+    public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T> action)
     {
         foreach (var item in enumerable)
         {
             action(item);
-            yield return item;
         }
     }
 
-    public static IEnumerable<T> ForEach<T>(this IEnumerable<T> enumerable, Action<T, int> action)
+    public static void ForEach<T>(this IEnumerable<T> enumerable, Action<T, int> action)
     {
         int index = 0;
         foreach (var item in enumerable)
         {
             action(item, index++);
-            yield return item;
         }
     }
 
-    public static IEnumerable<T> For<T>(this IList<T> list, Action<T> action)
+    public static void For<T>(this IList<T> list, Action<T> action)
     {
         for (var i = 0; i < list.Count; i++)
         {
-            var item = list[i];
-            action(item);
-            yield return item;
+            action(list[i]);
         }
     }
 
-    public static IEnumerable<T> For<T>(this IList<T> list, Action<T, int> action)
+    public static void For<T>(this IList<T> list, Action<T, int> action)
     {
         for (var i = 0; i < list.Count; i++)
         {
-            var item = list[i];
-            action(item, i);
-            yield return item;
+            action(list[i], i);
         }
     }
 

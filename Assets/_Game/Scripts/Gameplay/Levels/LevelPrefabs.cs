@@ -4,18 +4,18 @@ using UnityEngine;
 public class LevelPrefabs : ScriptableObject
 {
     [field: SerializeField]
-    [LevelPrefabInfo("Character", true)]
+    [LevelPrefabInfo("Character")]
     public Character Character1 { get; private set; }
     [field: SerializeField]
-    [LevelPrefabInfo("CharacterReversed", true)]
+    [LevelPrefabInfo("CharacterReversed")]
     public Character Character2 { get; private set; }
     [field: SerializeField]
-    [LevelPrefabInfo("Ground", false)]
+    [LevelPrefabInfo("Ground")]
     public Transform LevelGround { get; private set; }
     [field: SerializeField]
-    [LevelPrefabInfo("PickableBox", false)]
+    [LevelPrefabInfo("PickableBox")]
     public Pickable PickableBox { get; private set; }
     [field: SerializeField]
-    [LevelPrefabInfo("LevelEndZone", true)]
+    [LevelPrefabInfo("LevelEndZone")]
     public LevelEndZone LevelEndZone { get; private set; }
 }

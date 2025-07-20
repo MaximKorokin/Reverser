@@ -40,12 +40,9 @@ public class LevelPrefabsManager
         return true;
     }
 
-    public LevelData ToLevelData(IEnumerable<(GameObject, Vector2)> prefabPositionPairs)
+    public List<LevelObject> ToLevelObjects(IEnumerable<(GameObject, Vector2)> prefabPositionPairs)
     {
-        var levelData = new LevelData
-        {
-            LevelObjects = new()
-        };
+        var levelObjects = new List<LevelObject>();
         foreach (var (prefab, position) in prefabPositionPairs)
         {
             if (!_prefabs.TryGetValue(prefab, out var info))
@@ -56,9 +53,9 @@ public class LevelPrefabsManager
 
             // avoiding excessive float error (like 3.000000238418579f)
             var roundedPosition = new Vector2((float)Math.Round(position.x, 2), (float)Math.Round(position.y, 2));
-            levelData.LevelObjects.Add(new() { Name = info.Name, Position = roundedPosition });
+            levelObjects.Add(new() { Name = info.Name, Position = roundedPosition });
         }
-        return levelData;
+        return levelObjects;
     }
 
     public GameObject ToLevelPrefab(string name)

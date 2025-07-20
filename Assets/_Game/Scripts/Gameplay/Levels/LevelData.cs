@@ -5,6 +5,9 @@ using UnityEngine;
 [Serializable]
 public class LevelData
 {
+    [LevelDataInfo("Level name", "name")]
+    public string LevelName;
+    [LevelDataInfo("Half duration", "15")]
     public float LevelHalfDuration;
     public List<LevelObject> LevelObjects;
 }
