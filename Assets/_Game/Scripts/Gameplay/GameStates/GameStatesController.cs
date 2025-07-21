@@ -43,9 +43,10 @@ public class GameStatesController
 
     private void SetStateInternal(GameState gameState)
     {
-        _savedStates.Add(gameState);
-        gameState.SwitchStateRequested -= OnSwitchStateRequested;
-        gameState.SwitchStateRequested += OnSwitchStateRequested;
+        if (_savedStates.Add(gameState))
+        {
+            gameState.SwitchStateRequested += OnSwitchStateRequested;
+        }
 
         gameState.Enable();
         GameStateChanged?.Invoke(gameState);
