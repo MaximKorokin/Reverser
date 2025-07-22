@@ -3,6 +3,7 @@
 public class SnapPlacer
 {
     private readonly float _snappingStep;
+
     private readonly RectTransform _parent;
 
     public SnapPlacer(float snappingStep, RectTransform parent)
@@ -11,11 +12,16 @@ public class SnapPlacer
         _parent = parent;
     }
 
-    public void Place(RectTransform transform, Vector2 worldPosition)
+    public void Place(RectTransform transform, Vector2 worldPosition, Vector2 worldOffset)
     {
         transform.SetParent(_parent, false);
         var snappedPosition = GetNearestSnappedPosition(worldPosition);
-        transform.position = snappedPosition;
+        var positionDelta = worldPosition - snappedPosition;
+        var offset = new Vector2(worldOffset.x % _snappingStep, worldOffset.y % _snappingStep);
+        offset -= new Vector2(
+            Mathf.Abs(offset.x - positionDelta.x) < _snappingStep / 2 ? 0 : _snappingStep * Mathf.Sign(offset.x),
+            Mathf.Abs(offset.y - positionDelta.y) < _snappingStep / 2 ? 0 : _snappingStep * Mathf.Sign(offset.y));
+        transform.position = snappedPosition + offset;
         var screenSize = (Camera.main.WorldToScreenPoint(Vector2.right * _snappingStep) - Camera.main.WorldToScreenPoint(Vector2.zero)).x;
         transform.sizeDelta = new Vector2(screenSize, screenSize);
     }

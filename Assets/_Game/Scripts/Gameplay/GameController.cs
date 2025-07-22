@@ -2,7 +2,7 @@ using System.Globalization;
 using UnityEngine;
 using VContainer.Unity;
 
-public class GameController : ITickable, IInitializable
+public class GameController : IStartable
 {
     private readonly GameStatesController _gameStatesController;
 
@@ -11,16 +11,11 @@ public class GameController : ITickable, IInitializable
         _gameStatesController = gameStatesController;
     }
 
-    public void Initialize()
+    public void Start()
     {
         CultureInfo.CurrentCulture = new CultureInfo("en-US");
         Application.targetFrameRate = 60;
 
         _gameStatesController.SetState(typeof(MainMenuGameState));
-    }
-
-    public void Tick()
-    {
-
     }
 }

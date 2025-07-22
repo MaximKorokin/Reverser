@@ -23,6 +23,10 @@ public class TimeControlComponentSwitcher : MonoBehaviourBase
 
         var enabled = _timeFlowModeInterpretation.InterpretTimeFlowMode(newMode) == TimeFlowMode.Forward;
 
+        if (_components.HasFlag(TimeControlBehaviour.Character) && TryGetComponent<Character>(out var character))
+        {
+            character.enabled = enabled;
+        }
         if (_components.HasFlag(TimeControlBehaviour.Collider2D) && TryGetComponent<Collider2D>(out var collider))
         {
             collider.enabled = enabled;
@@ -52,6 +56,7 @@ public class TimeControlComponentSwitcher : MonoBehaviourBase
     [Flags]
     private enum TimeControlBehaviour
     {
+        Character = 1,
         Collider2D = 2,
         Animator = 4,
         Pickable = 8,

@@ -16,6 +16,7 @@ public class Character : MonoBehaviourBase
     [SerializeField]
     private float _pickRange;
 
+    private CameraController _cameraController;
     private Rigidbody2D _rigidbody;
     private Animator _animator;
 
@@ -24,8 +25,10 @@ public class Character : MonoBehaviourBase
     private float _lastNonZeroHorizontalVelocity;
 
     [Inject]
-    private void Construct(PlayerInputHandler playerInputHandler)
+    private void Construct(PlayerInputHandler playerInputHandler, CameraController cameraController)
     {
+        _cameraController = cameraController;
+
         playerInputHandler.Enable();
         playerInputHandler.JumpInputRecieved += OnJumpInputRecieved;
         playerInputHandler.MoveInputRecieved += OnMoveInputRecieved;
@@ -54,6 +57,8 @@ public class Character : MonoBehaviourBase
 
         _isGrounded = _groundCheck.IsTouchingLayers(LayerMask.GetMask(Constants.Layer.Ground.ToString()));
         _rigidbody.linearVelocityX = _currentHorizontalVelocity;
+
+        _cameraController.MoveCamera(transform.position);
     }
 
     private void OnJumpInputRecieved()

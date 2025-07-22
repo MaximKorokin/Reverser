@@ -16,6 +16,7 @@ public class GameLifetimeScope : LifetimeScope
     {
         builder.RegisterEntryPoint<GameController>();
         builder.RegisterComponentOnNewGameObject<Timer>(Lifetime.Scoped);
+        builder.RegisterComponentInHierarchy<CameraController>();
 
         RegisterUI(builder);
         RegisterLevelConstructing(builder);

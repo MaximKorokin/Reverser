@@ -9,16 +9,21 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
     private PointerEventsHandler _pointerEventsHandler;
     [SerializeField]
     private LevelEditorContextButtons _levelEditorContextButtons;
+    [SerializeField]
+    private RectTransform _prompt;
 
     private SnapPlacer SnapPlacer => GetLazy(() => new SnapPlacer(1, RectTransform));
 
     private SelectableGameObjectWrapper _selectedPlaceGameObjectWrapper;
     private GameObject _placePrefab;
+    private Vector2 _currentOffset;
 
     protected override void Awake()
     {
         base.Awake();
 
+        _pointerEventsHandler.PointerDown += OnPointerDown;
+        _pointerEventsHandler.PointerDrag += OnPointerDrag;
         _pointerEventsHandler.PointerClickUp += OnPointerClickUp;
         _levelEditorContextButtons.RemoveButtonClicked += OnRemoveContextButtonClicked;
 
@@ -28,12 +33,35 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
     protected SelectableGameObjectWrapper CreateSelectableGameObjectWrapper(GameObject toWrap, Vector2 worldPosition)
     {
         var wrapper = CreateSelectableGameObjectWrapper(toWrap);
-        SnapPlacer.Place(wrapper.transform as RectTransform, worldPosition);
+        PlaceSnapped(wrapper.RectTransform, worldPosition);
         return wrapper;
+    }
+
+    private void PlaceSnapped(RectTransform rectTransform, Vector2 worldPosition)
+    {
+        var worldOffset = _currentOffset / Camera.main.GetUnitScreenSize();
+        SnapPlacer.Place(rectTransform, worldPosition, worldOffset);
+    }
+
+    private void OnPointerDown(PointerEventData eventData)
+    {
+        if (_placePrefab != null)
+        {
+            _prompt.gameObject.SetActive(true);
+            PlaceSnapped(_prompt, eventData.pointerCurrentRaycast.worldPosition);
+        }
+    }
+
+    private void OnPointerDrag(PointerEventData eventData)
+    {
+        _prompt.gameObject.SetActive(false);
+        _currentOffset += eventData.delta;
+        LevelObjectsSelectableGroup.SelectableElements.ForEach(x => x.RectTransform.anchoredPosition += eventData.delta);
     }
 
     private void OnPointerClickUp(PointerEventData eventData)
     {
+        _prompt.gameObject.SetActive(false);
         if (_placePrefab != null)
         {
             CreateSelectableGameObjectWrapper(_placePrefab, eventData.pointerCurrentRaycast.worldPosition);
@@ -63,11 +91,22 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
 
     public IEnumerable<(GameObject, Vector2)> GetPositionedPrefabs()
     {
-        return LevelObjectsSelectableGroup.SelectableElements.Select(x => (x.WrappedGameObject, (Vector2)x.transform.position));
+        var worldOffset = _currentOffset / Camera.main.GetUnitScreenSize();
+        return LevelObjectsSelectableGroup.SelectableElements.Select(
+            x => (x.WrappedGameObject, (Vector2)x.transform.position - worldOffset));
     }
 
     public void SetPositionedPrefabs(IEnumerable<(GameObject, Vector2)> positionedPrefabs)
     {
+        foreach (var (prefab, position) in positionedPrefabs)
+        {
+            CreateSelectableGameObjectWrapper(prefab, position);
+        }
+    }
+
+    public void Reset()
+    {
+        _currentOffset = Vector2.zero;
         LevelObjectsSelectableGroup.SelectableElements
             .ToArray()
             .ForEach(selectable =>
@@ -75,10 +114,5 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
                 LevelObjectsSelectableGroup.RemoveSelectable(selectable);
                 Destroy(selectable.gameObject);
             });
-
-        foreach (var (prefab, position) in positionedPrefabs)
-        {
-            CreateSelectableGameObjectWrapper(prefab, position);
-        }
     }
 }
