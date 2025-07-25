@@ -22,8 +22,8 @@ public class SnapPlacer
             Mathf.Abs(offset.x - positionDelta.x) < _snappingStep / 2 ? 0 : _snappingStep * Mathf.Sign(offset.x),
             Mathf.Abs(offset.y - positionDelta.y) < _snappingStep / 2 ? 0 : _snappingStep * Mathf.Sign(offset.y));
         transform.position = snappedPosition + offset;
-        var screenSize = (Camera.main.WorldToScreenPoint(Vector2.right * _snappingStep) - Camera.main.WorldToScreenPoint(Vector2.zero)).x;
-        transform.sizeDelta = new Vector2(screenSize, screenSize);
+        var sideSize = Camera.main.GetUnitScreenSize() * _snappingStep;
+        transform.sizeDelta = new Vector2(sideSize, sideSize);
     }
 
     private Vector2 GetNearestSnappedPosition(Vector2 position)

@@ -1,10 +1,10 @@
-﻿public class LevelMainGameState : GameState
+﻿public class LevelPlayGameState : GameState
 {
     private readonly TimeControlMediator _timeControlMediator;
     private readonly Timer _timer;
     private readonly LevelSharedContext _levelSharedContext;
 
-    public LevelMainGameState(
+    public LevelPlayGameState(
         UIInputHandler uiInputHandler,
         Timer timer,
         LevelSharedContext levelSharedContext,

@@ -26,6 +26,6 @@
 
     protected override void OnSubmitInputRecieved()
     {
-        SwitchState(typeof(LevelMainGameState));
+        SwitchState(typeof(LevelPlayGameState));
     }
 }
