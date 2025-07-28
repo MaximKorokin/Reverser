@@ -17,6 +17,7 @@ public class TimeControlComponentSwitcher : MonoBehaviourBase
         OnTimeFlowModeChanged(TimeFlowMode.None, timeControlMediator.TimeFlowMode);
     }
 
+    // todo: implement more generic approach
     private void OnTimeFlowModeChanged(TimeFlowMode previousMode, TimeFlowMode newMode)
     {
         if (previousMode == newMode) return;

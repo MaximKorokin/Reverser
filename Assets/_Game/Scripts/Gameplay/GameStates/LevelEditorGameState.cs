@@ -23,14 +23,4 @@
 
         _levelEditorController.gameObject.SetActive(true);
     }
-
-    protected override void OnCancelInputRecieved()
-    {
-
-    }
-
-    protected override void OnSubmitInputRecieved()
-    {
-
-    }
 }

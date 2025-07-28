@@ -19,13 +19,10 @@
         _levelConstructor.ConstructLevel();
     }
 
-    protected override void OnCancelInputRecieved()
-    {
-
-    }
-
     protected override void OnSubmitInputRecieved()
     {
+        Logger.Log("START");
+        base.OnSubmitInputRecieved();
         SwitchState(typeof(LevelPlayGameState));
     }
 }

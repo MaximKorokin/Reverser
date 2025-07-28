@@ -15,10 +15,11 @@ public class TimeController
         _player = player;
     }
 
-    public void Tick(TimeFlowMode timeFlowMode)
+    public void Tick(TimeFlowMode timeFlowMode, float deltaTime)
     {
         if (timeFlowMode == TimeFlowMode.Paused)
         {
+            _recorder.IncreaseTimeOffset(deltaTime);
             ResetCurrentStates();
         }
         else if (timeFlowMode == TimeFlowMode.Forward)

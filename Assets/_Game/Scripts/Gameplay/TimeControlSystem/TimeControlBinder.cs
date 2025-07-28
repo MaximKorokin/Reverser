@@ -20,21 +20,20 @@ public class TimeControlBinder : MonoBehaviourBase
 
     private void CreateTimeControllers(ComponentStateProcessorFactory componentStateProcessorFactory)
     {
-        _timeControllers.Add(new(
-            componentStateProcessorFactory.GetComponentStateRecorder(transform),
-            componentStateProcessorFactory.GetComponentStatePlayer(transform)));
-
-        if (TryGetComponent<SpriteRenderer>(out var spriteRenderer))
+        foreach(var component in GetComponents<Component>())
         {
-            _timeControllers.Add(new(
-                componentStateProcessorFactory.GetComponentStateRecorder(spriteRenderer),
-                componentStateProcessorFactory.GetComponentStatePlayer(spriteRenderer)));
+            var recorder = componentStateProcessorFactory.GetComponentStateRecorder(component);
+            var player = componentStateProcessorFactory.GetComponentStatePlayer(component);
+            if (recorder != null && player != null)
+            {
+                _timeControllers.Add(new(recorder, player));
+            }
         }
     }
 
     protected override void Update()
     {
         base.Update();
-        _timeControllers.ForEach(x => x.Tick(_timeFlowModeInterpretation.InterpretTimeFlowMode(_timeControlMediator.TimeFlowMode)));
+        _timeControllers.ForEach(x => x.Tick(_timeFlowModeInterpretation.InterpretTimeFlowMode(_timeControlMediator.TimeFlowMode), Time.deltaTime));
     }
 }

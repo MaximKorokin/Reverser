@@ -20,12 +20,13 @@ public abstract class GameState
             return false;
         }
 
-        DisableInternal();
-
         UIInputHandler.Disable();
         UIInputHandler.SubmitInputRecieved -= OnSubmitInputRecieved;
         UIInputHandler.CancelInputRecieved -= OnCancelInputRecieved;
         IsEnabled = false;
+
+        DisableInternal();
+
         return true;
     }
 
@@ -39,12 +40,13 @@ public abstract class GameState
             return false;
         }
 
-        EnableInternal();
-
         UIInputHandler.Enable();
         UIInputHandler.SubmitInputRecieved += OnSubmitInputRecieved;
         UIInputHandler.CancelInputRecieved += OnCancelInputRecieved;
         IsEnabled = true;
+
+        EnableInternal();
+
         return true;
     }
 
@@ -55,6 +57,6 @@ public abstract class GameState
         SwitchStateRequested?.Invoke(this, gameStateType);
     }
 
-    protected abstract void OnSubmitInputRecieved();
-    protected abstract void OnCancelInputRecieved();
+    protected virtual void OnSubmitInputRecieved() { }
+    protected virtual void OnCancelInputRecieved() { }
 }

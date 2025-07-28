@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class ComponentState
 {
-    public readonly float Time;
+    public float Time;
 
     public ComponentState()
     {

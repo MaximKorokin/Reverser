@@ -1,8 +1,12 @@
-﻿public class LevelPlayGameState : GameState
+﻿using VContainer.Unity;
+
+public class LevelPlayGameState : GameState
 {
     private readonly TimeControlMediator _timeControlMediator;
     private readonly Timer _timer;
     private readonly LevelSharedContext _levelSharedContext;
+
+    private Timer.DelayedAction _timeStateDelayedAction;
 
     public LevelPlayGameState(
         UIInputHandler uiInputHandler,
@@ -19,33 +23,51 @@
     {
         base.EnableInternal();
 
-        _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Forward);
-        _timer.Schedule(
-            () => _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Backward),
-            _levelSharedContext.LevelData.LevelHalfDuration);
-
+        _levelSharedContext.LevelTimeCounter.SetPaused(false);
+        UpdateTimeState();
+        
         _levelSharedContext.LevelCompleted += OnLevelCompleted;
+    }
+
+    private void UpdateTimeState()
+    {
+        var remainingTime = _levelSharedContext.LevelTimeCounter.RemainingTime;
+        Logger.Log(remainingTime);
+        if (remainingTime > _levelSharedContext.LevelData.LevelHalfDuration)
+        {
+            _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Forward);
+            _timeStateDelayedAction = _timer.Schedule(UpdateTimeState, remainingTime - _levelSharedContext.LevelData.LevelHalfDuration);
+        }
+        else if (remainingTime > 0)
+        {
+            _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Backward);
+            _timeStateDelayedAction = _timer.Schedule(UpdateTimeState, remainingTime);
+        }
+        else
+        {
+            SwitchState(typeof(LevelFailGameState));
+        }
     }
 
     protected override void DisableInternal()
     {
         base.DisableInternal();
+        _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Paused);
+
+        _timeStateDelayedAction?.Cancel();
 
         _levelSharedContext.LevelCompleted -= OnLevelCompleted;
     }
 
     private void OnLevelCompleted()
     {
-        SwitchState(typeof(LevelEndGameState));
+        SwitchState(typeof(LevelCompleteGameState));
     }
 
     protected override void OnCancelInputRecieved()
     {
-
-    }
-
-    protected override void OnSubmitInputRecieved()
-    {
-
+        base.OnCancelInputRecieved();
+        _levelSharedContext.LevelTimeCounter.SetPaused(true);
+        SwitchState(typeof(LevelPauseGameState));
     }
 }

@@ -79,7 +79,9 @@ public class GameLifetimeScope : LifetimeScope
 
         builder.Register<LevelStartGameState>(Lifetime.Scoped);
         builder.Register<LevelPlayGameState>(Lifetime.Scoped);
-        builder.Register<LevelEndGameState>(Lifetime.Scoped);
+        builder.Register<LevelPauseGameState>(Lifetime.Scoped);
+        builder.Register<LevelCompleteGameState>(Lifetime.Scoped);
+        builder.Register<LevelFailGameState>(Lifetime.Scoped);
 
         builder.Register<LevelEditorGameState>(Lifetime.Scoped);
     }

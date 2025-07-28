@@ -43,11 +43,8 @@ public class MainMenuGameState : GameState, IDisposable
 
     protected override void OnCancelInputRecieved()
     {
+        base.OnCancelInputRecieved();
         Application.Quit();
-    }
-
-    protected override void OnSubmitInputRecieved()
-    {
     }
 
     public void Dispose()

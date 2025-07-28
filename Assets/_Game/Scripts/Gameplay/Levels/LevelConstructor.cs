@@ -28,6 +28,9 @@ public class LevelConstructor
 
     public void ConstructLevel()
     {
+        // todo: maybe this line should be in LevelStartGameState
+        _levelSharedContext.LevelTimeCounter.Reset(_levelSharedContext.LevelData.LevelHalfDuration * 2);
+        _levelSharedContext.LevelTimeCounter.SetPaused(true);
         ConstructLevel(_levelSharedContext.LevelData);
     }
 

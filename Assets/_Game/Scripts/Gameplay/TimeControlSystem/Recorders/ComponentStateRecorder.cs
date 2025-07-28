@@ -24,5 +24,10 @@ public abstract class ComponentStateRecorder : ComponentStateProcessor
         }
     }
 
+    public void IncreaseTimeOffset(float timeOffset)
+    {
+        _states.ForEach(x => x.Time += timeOffset);
+    }
+
     protected abstract ComponentState RecordStateInternal();
 }

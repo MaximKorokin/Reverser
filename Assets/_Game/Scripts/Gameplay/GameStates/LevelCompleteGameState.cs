@@ -1,9 +1,9 @@
-﻿public class LevelEndGameState : GameState
+﻿public class LevelCompleteGameState : GameState
 {
     private readonly Timer _timer;
     private readonly LevelConstructor _levelConstructor;
 
-    public LevelEndGameState(
+    public LevelCompleteGameState(
         UIInputHandler uiInputHandler,
         Timer timer,
         LevelConstructor levelConstructor) : base(uiInputHandler)
@@ -18,7 +18,7 @@
 
         _timer.Schedule(() => SwitchState(typeof(MainMenuGameState)), 1);
 
-        Logger.Log("=== END ===");
+        Logger.Log("=== COMPLETE ===");
     }
 
     protected override void DisableInternal()
@@ -26,15 +26,5 @@
         base.DisableInternal();
 
         _levelConstructor.Clear();
-    }
-
-    protected override void OnCancelInputRecieved()
-    {
-
-    }
-
-    protected override void OnSubmitInputRecieved()
-    {
-
     }
 }
