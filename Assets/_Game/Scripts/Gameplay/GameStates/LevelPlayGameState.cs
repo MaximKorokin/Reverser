@@ -1,6 +1,4 @@
-﻿using VContainer.Unity;
-
-public class LevelPlayGameState : GameState
+﻿public class LevelPlayGameState : GameState
 {
     private readonly TimeControlMediator _timeControlMediator;
     private readonly Timer _timer;
@@ -32,7 +30,6 @@ public class LevelPlayGameState : GameState
     private void UpdateTimeState()
     {
         var remainingTime = _levelSharedContext.LevelTimeCounter.RemainingTime;
-        Logger.Log(remainingTime);
         if (remainingTime > _levelSharedContext.LevelData.LevelHalfDuration)
         {
             _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Forward);

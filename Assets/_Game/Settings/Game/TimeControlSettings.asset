@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec0d15d0fbcf7bd4282e69d6ac79bac9, type: 3}
   m_Name: TimeControlSettings
   m_EditorClassIdentifier: 
-  <MaxSecondsToRecord>k__BackingField: 30
+  <MaxSecondsToRecord>k__BackingField: 10
   <InitialTimeFlowMode>k__BackingField: 3
