@@ -3,34 +3,33 @@ using UnityEngine.EventSystems;
 
 public class PointerEventsHandler : MonoBehaviourBase, IPointerDownHandler, IPointerUpHandler, IDragHandler
 {
-    private bool _isDragging;
-
     public event Action<PointerEventData> PointerDrag;
     public event Action<PointerEventData> PointerDown;
-    public event Action<PointerEventData> PointerClickUp;
+    /// <summary>
+    /// Pointer up with no drag
+    /// </summary>
+    public event Action<PointerEventData> PointerUp;
     public event Action<PointerEventData> PointerDragUp;
 
     public void OnDrag(PointerEventData eventData)
     {
-        _isDragging = true;
         PointerDrag?.Invoke(eventData);
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        _isDragging = false;
         PointerDown?.Invoke(eventData);
     }
 
     public void OnPointerUp(PointerEventData eventData)
     {
-        if (_isDragging)
+        if (eventData.dragging)
         {
             PointerDragUp?.Invoke(eventData);
         }
         else
         {
-            PointerClickUp?.Invoke(eventData);
+            PointerUp?.Invoke(eventData);
         }
     }
 }

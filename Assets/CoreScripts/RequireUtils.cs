@@ -30,6 +30,16 @@ public static class RequireUtils
         return component;
     }
 
+    public static T GetRequiredComponentInParent<T>(this GameObject behaviour) where T : Component
+    {
+        var component = behaviour.GetComponentInParent<T>();
+        if (component == null)
+        {
+            Logger.Error($"GameObject {behaviour.name} doesn't contain required component {typeof(T)} in parents");
+        }
+        return component;
+    }
+
     public static T GetRequiredComponentOrInChildren<T>(this GameObject behaviour) where T : Component
     {
         var component = behaviour.GetComponentInChildren<T>();

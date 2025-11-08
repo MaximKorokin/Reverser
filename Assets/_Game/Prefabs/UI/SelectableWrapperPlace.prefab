@@ -200,5 +200,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caceec74b3ecf234b9334aac65b46c2e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _selectionType: 1
   _wrappedObjectImage: {fileID: 3371945016172821936}
   _backgroundImage: {fileID: 1306087903521567063}

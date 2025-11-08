@@ -1,15 +1,30 @@
 ﻿using System;
+using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class SelectableElement : UIBehaviourBase, IPointerDownHandler
+public class SelectableElement : UIBehaviourBase, IPointerDownHandler, IPointerUpHandler
 {
+    [SerializeField]
+    private SelectionType _selectionType;
+
     private bool _isSelected;
 
     public event Action<SelectableElement, bool> SelectionChanged;
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        SetSelection(!_isSelected, false);
+        if (_selectionType == SelectionType.PointerDown)
+        {
+            SetSelection(!_isSelected, false);
+        }
+    }
+
+    public void OnPointerUp(PointerEventData eventData)
+    {
+        if (_selectionType == SelectionType.PointerUp && !eventData.dragging)
+        {
+            SetSelection(!_isSelected, false);
+        }
     }
 
     public virtual void SetSelection(bool selection, bool silent)
@@ -20,5 +35,11 @@ public class SelectableElement : UIBehaviourBase, IPointerDownHandler
         {
             SelectionChanged?.Invoke(this, _isSelected);
         }
+    }
+
+    private enum SelectionType
+    {
+        PointerDown,
+        PointerUp,
     }
 }

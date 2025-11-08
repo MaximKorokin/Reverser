@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-public class LevelEditorSelectableAreaController : UIBehaviourBase
+public abstract class LevelEditorSelectableAreaController : UIBehaviourBase
 {
     [SerializeField]
     private SelectableGameObjectWrapper _selectableLevelObjectWrapperPrefab;

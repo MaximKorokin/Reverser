@@ -13,6 +13,8 @@ public class LevelEditorController : MonoBehaviourBase
     private LevelEditorPoolAreaController _levelEditorPoolAreaController;
     [SerializeField]
     private LevelEditorInfoAreaController _levelEditorInfoAreaController;
+    [SerializeField]
+    private LevelEditorConfirmDialog _levelEditorConfirmDialog;
 
     private LevelSharedContext _levelSharedContext;
     private LevelPrefabsManager _prefabsManager;
@@ -50,7 +52,7 @@ public class LevelEditorController : MonoBehaviourBase
 
     private void SetLevelData(LevelData levelData)
     {
-        _levelEditorPlaceAreaController.Reset();
+        _levelEditorPlaceAreaController.ResetState();
         _levelEditorPlaceAreaController.SetPositionedPrefabs(levelData.LevelObjects.Select(x => (_prefabsManager.ToLevelPrefab(x.Name), x.Position)));
         _levelEditorInfoAreaController.SetLevelData(levelData);
     }
@@ -65,6 +67,11 @@ public class LevelEditorController : MonoBehaviourBase
     public void RequestCloseLevelEditor()
     {
         CloseEditorRequested?.Invoke();
+    }
+
+    public void RequestResetLevelEditor()
+    {
+        _levelEditorConfirmDialog.Show(_levelEditorPlaceAreaController.ResetState);
     }
 
     public void LoadLevel()

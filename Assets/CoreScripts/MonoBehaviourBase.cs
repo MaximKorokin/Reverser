@@ -51,6 +51,11 @@ public abstract class MonoBehaviourBase : MonoBehaviour
         return RequireUtils.GetRequiredComponentInChildren<T>(gameObject);
     }
 
+    public virtual T GetRequiredComponentInParent<T>() where T : Component
+    {
+        return RequireUtils.GetRequiredComponentInParent<T>(gameObject);
+    }
+
     public virtual T GetRequiredComponentOrInChildren<T>() where T : Component
     {
         return RequireUtils.GetRequiredComponentOrInChildren<T>(gameObject);

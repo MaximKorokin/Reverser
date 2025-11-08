@@ -12,7 +12,7 @@ public class SnapPlacer
         _parent = parent;
     }
 
-    public void Place(RectTransform transform, Vector2 worldPosition, Vector2 worldOffset)
+    public void Place(RectTransform transform, Vector2 worldPosition, Vector2 worldOffset, float scaleFactor)
     {
         transform.SetParent(_parent, false);
         var snappedPosition = GetNearestSnappedPosition(worldPosition);
@@ -22,7 +22,7 @@ public class SnapPlacer
             Mathf.Abs(offset.x - positionDelta.x) < _snappingStep / 2 ? 0 : _snappingStep * Mathf.Sign(offset.x),
             Mathf.Abs(offset.y - positionDelta.y) < _snappingStep / 2 ? 0 : _snappingStep * Mathf.Sign(offset.y));
         transform.position = snappedPosition + offset;
-        var sideSize = Camera.main.GetUnitScreenSize() * _snappingStep;
+        var sideSize = _snappingStep * Camera.main.GetUnitScreenSize(scaleFactor);
         transform.sizeDelta = new Vector2(sideSize, sideSize);
     }
 

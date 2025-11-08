@@ -24,8 +24,9 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
 
         _pointerEventsHandler.PointerDown += OnPointerDown;
         _pointerEventsHandler.PointerDrag += OnPointerDrag;
-        _pointerEventsHandler.PointerClickUp += OnPointerClickUp;
+        _pointerEventsHandler.PointerUp += OnPointerClickUp;
         _levelEditorContextButtons.RemoveButtonClicked += OnRemoveContextButtonClicked;
+        _levelEditorContextButtons.OnHidden += OnContextButtonsHidden;
 
         LevelObjectsSelectableGroup.SelectedChanged += OnPlaceLevelObjectsSelectedChanged;
     }
@@ -39,8 +40,8 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
 
     private void PlaceSnapped(RectTransform rectTransform, Vector2 worldPosition)
     {
-        var worldOffset = _currentOffset / Camera.main.GetUnitScreenSize();
-        SnapPlacer.Place(rectTransform, worldPosition, worldOffset);
+        var worldOffset = _currentOffset / Camera.main.GetUnitScreenSize(Canvas.scaleFactor);
+        SnapPlacer.Place(rectTransform, worldPosition, worldOffset, Canvas.scaleFactor);
     }
 
     private void OnPointerDown(PointerEventData eventData)
@@ -55,6 +56,7 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
     private void OnPointerDrag(PointerEventData eventData)
     {
         _prompt.gameObject.SetActive(false);
+        // todo: try to calculate offset in world coordinates
         _currentOffset += eventData.delta;
         LevelObjectsSelectableGroup.SelectableElements.ForEach(x => x.RectTransform.anchoredPosition += eventData.delta);
     }
@@ -74,6 +76,11 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
         Destroy(_selectedPlaceGameObjectWrapper.gameObject);
     }
 
+    private void OnContextButtonsHidden()
+    {
+        _selectedPlaceGameObjectWrapper.SetSelection(false);
+    }
+
     private void OnPlaceLevelObjectsSelectedChanged(SelectableGameObjectWrapper selectable)
     {
         _selectedPlaceGameObjectWrapper = selectable;
@@ -91,7 +98,7 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
 
     public IEnumerable<(GameObject, Vector2)> GetPositionedPrefabs()
     {
-        var worldOffset = _currentOffset / Camera.main.GetUnitScreenSize();
+        var worldOffset = _currentOffset / Camera.main.GetUnitScreenSize(Canvas.scaleFactor);
         return LevelObjectsSelectableGroup.SelectableElements.Select(
             x => (x.WrappedGameObject, (Vector2)x.transform.position - worldOffset));
     }
@@ -104,7 +111,7 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
         }
     }
 
-    public void Reset()
+    public void ResetState()
     {
         _currentOffset = Vector2.zero;
         LevelObjectsSelectableGroup.SelectableElements
