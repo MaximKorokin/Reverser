@@ -17,9 +17,9 @@
         _levelEditorController.gameObject.SetActive(false);
     }
 
-    protected override void EnableInternal()
+    protected override void EnableInternal(object parameter)
     {
-        base.EnableInternal();
+        base.EnableInternal(parameter);
 
         _levelEditorController.gameObject.SetActive(true);
     }

@@ -15,7 +15,7 @@ public class GameStatesController
         _gameStatesResolver = gameStatesResolver;
     }
 
-    private void OnSwitchStateRequested(GameState fromState, Type toStateType)
+    private void OnSwitchStateRequested(GameState fromState, Type toStateType, object parameter)
     {
         var toState = _gameStatesResolver(toStateType);
         if (toState == null || !fromState.IsEnabled || toState.IsEnabled)
@@ -25,10 +25,10 @@ public class GameStatesController
         }
 
         fromState.Disable();
-        SetStateInternal(toState);
+        SetStateInternal(toState, parameter);
     }
 
-    public void SetState(Type stateType)
+    public void SetState(Type stateType, object parameter = null)
     {
         var state = _gameStatesResolver(stateType);
         if (state == null)
@@ -38,17 +38,17 @@ public class GameStatesController
         }
 
         _savedStates.Except(state.Yield()).Where(x => x.IsEnabled).ForEach(x => x.Disable());
-        SetStateInternal(state);
+        SetStateInternal(state, parameter);
     }
 
-    private void SetStateInternal(GameState gameState)
+    private void SetStateInternal(GameState gameState, object parameter)
     {
         if (_savedStates.Add(gameState))
         {
             gameState.SwitchStateRequested += OnSwitchStateRequested;
         }
 
-        gameState.Enable();
+        gameState.Enable(parameter);
         GameStateChanged?.Invoke(gameState);
     }
 }

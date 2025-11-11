@@ -19,6 +19,7 @@ public class GameLifetimeScope : LifetimeScope
         builder.RegisterComponentInHierarchy<CameraController>();
 
         RegisterUI(builder);
+        RegisterServices(builder);
         RegisterLevelConstructing(builder);
         RegisterLevelEditor(builder);
         RegisterGameStates(builder);
@@ -50,8 +51,14 @@ public class GameLifetimeScope : LifetimeScope
     private void RegisterUI(IContainerBuilder builder)
     {
         builder.RegisterComponentInHierarchy<LevelSelectionController>();
+        builder.RegisterComponentInHierarchy<PlayPauseView>();
 
         builder.RegisterFactory<int, LevelData>(resolver => i => _levelDataProvider.GetLevelData(i), Lifetime.Transient);
+    }
+
+    private void RegisterServices(IContainerBuilder builder)
+    {
+        builder.Register<PlayPauseService>(Lifetime.Scoped);
     }
 
     private void RegisterInput(IContainerBuilder builder)
@@ -82,6 +89,7 @@ public class GameLifetimeScope : LifetimeScope
         builder.Register<LevelPauseGameState>(Lifetime.Scoped);
         builder.Register<LevelCompleteGameState>(Lifetime.Scoped);
         builder.Register<LevelFailGameState>(Lifetime.Scoped);
+        builder.Register<LevelCleanupGameState>(Lifetime.Scoped);
 
         builder.Register<LevelEditorGameState>(Lifetime.Scoped);
     }

@@ -7,9 +7,15 @@ public class LevelSharedContext
     public TimeCounter LevelTimeCounter { get; } = new(0);
 
     public event Action LevelCompleted;
+    public event Action LevelFailed;
 
     public void InvokeLevelCompleted()
     {
         LevelCompleted?.Invoke();
+    }
+
+    public void InvokeLevelFailed()
+    {
+        LevelFailed?.Invoke();
     }
 }

@@ -5,7 +5,7 @@ public abstract class GameState
     public bool IsEnabled { get; private set; } = false;
     protected readonly UIInputHandler UIInputHandler;
 
-    public event Action<GameState, Type> SwitchStateRequested;
+    public event Action<GameState, Type, object> SwitchStateRequested;
 
     public GameState(UIInputHandler uiInputHandler)
     {
@@ -32,7 +32,7 @@ public abstract class GameState
 
     protected virtual void DisableInternal() { }
 
-    public bool Enable()
+    public bool Enable(object parameter)
     {
         if (IsEnabled)
         {
@@ -45,16 +45,16 @@ public abstract class GameState
         UIInputHandler.CancelInputRecieved += OnCancelInputRecieved;
         IsEnabled = true;
 
-        EnableInternal();
+        EnableInternal(parameter);
 
         return true;
     }
 
-    protected virtual void EnableInternal() { }
+    protected virtual void EnableInternal(object parameter) { }
 
-    protected void SwitchState(Type gameStateType)
+    protected void SwitchState(Type gameStateType, object parameter = null)
     {
-        SwitchStateRequested?.Invoke(this, gameStateType);
+        SwitchStateRequested?.Invoke(this, gameStateType, parameter);
     }
 
     protected virtual void OnSubmitInputRecieved() { }

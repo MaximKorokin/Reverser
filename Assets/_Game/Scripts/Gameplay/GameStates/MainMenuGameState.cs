@@ -24,9 +24,9 @@ public class MainMenuGameState : GameState, IDisposable
         SwitchState(typeof(LevelStartGameState));
     }
 
-    protected override void EnableInternal()
+    protected override void EnableInternal(object parameter)
     {
-        base.EnableInternal();
+        base.EnableInternal(parameter);
 
         _levelSelectionController.gameObject.SetActive(true);
         _levelSelectionController.LevelSelected -= OnLevelSelected;

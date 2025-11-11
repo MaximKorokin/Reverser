@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
 
+// todo: split ui and game logic
 public class LevelSelectionController : MonoBehaviourBase
 {
     [SerializeField]

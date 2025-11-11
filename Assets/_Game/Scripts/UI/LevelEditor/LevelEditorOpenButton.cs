@@ -1,7 +1,7 @@
 ﻿using UnityEngine.UI;
 using VContainer;
 
-public class LevelEditorOpenButton : MonoBehaviourBase
+public class LevelEditorOpenButton : UIBehaviourBase
 {
     private GameStatesController _gameStatesController;
     private LevelConstructor _levelConstructor;

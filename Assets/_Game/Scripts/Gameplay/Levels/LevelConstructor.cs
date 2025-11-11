@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 
 public class LevelConstructor
@@ -28,14 +29,17 @@ public class LevelConstructor
 
     public void ConstructLevel()
     {
-        // todo: maybe this line should be in LevelStartGameState
+        // todo: maybe these lines should be in LevelStartGameState
         _levelSharedContext.LevelTimeCounter.Reset(_levelSharedContext.LevelData.LevelHalfDuration * 2);
         _levelSharedContext.LevelTimeCounter.SetPaused(true);
+
         ConstructLevel(_levelSharedContext.LevelData);
     }
 
-    public void ConstructLevel(LevelData levelData)
+    private void ConstructLevel(LevelData levelData)
     {
+        Clear();
+
         _levelSharedContext.LevelData = levelData;
 
         if (levelData == null) return;

@@ -1,20 +1,17 @@
 ﻿public class LevelFailGameState : GameState
 {
     private readonly Timer _timer;
-    private readonly LevelConstructor _levelConstructor;
 
     public LevelFailGameState(
         UIInputHandler uiInputHandler,
-        Timer timer,
-        LevelConstructor levelConstructor) : base(uiInputHandler)
+        Timer timer) : base(uiInputHandler)
     {
         _timer = timer;
-        _levelConstructor = levelConstructor;
     }
 
-    protected override void EnableInternal()
+    protected override void EnableInternal(object parameter)
     {
-        base.EnableInternal();
+        base.EnableInternal(parameter);
 
         _timer.Schedule(() => SwitchState(typeof(LevelStartGameState)), 1);
 
@@ -24,7 +21,5 @@
     protected override void DisableInternal()
     {
         base.DisableInternal();
-
-        _levelConstructor.Clear();
     }
 }

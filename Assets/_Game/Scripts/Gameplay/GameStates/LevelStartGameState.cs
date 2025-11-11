@@ -12,16 +12,16 @@
         _timeControlMediator = timeControlMediator;
     }
 
-    protected override void EnableInternal()
+    protected override void EnableInternal(object parameter)
     {
-        base.EnableInternal();
+        base.EnableInternal(parameter);
         _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Paused);
         _levelConstructor.ConstructLevel();
     }
 
     protected override void OnSubmitInputRecieved()
     {
-        Logger.Log("START");
+        Logger.Log("=== START ===");
         base.OnSubmitInputRecieved();
         SwitchState(typeof(LevelPlayGameState));
     }

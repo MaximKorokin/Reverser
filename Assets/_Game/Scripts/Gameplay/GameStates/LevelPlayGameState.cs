@@ -1,59 +1,43 @@
 ﻿public class LevelPlayGameState : GameState
 {
-    private readonly TimeControlMediator _timeControlMediator;
-    private readonly Timer _timer;
+    private readonly PlayPauseService _playPauseController;
     private readonly LevelSharedContext _levelSharedContext;
-
-    private Timer.DelayedAction _timeStateDelayedAction;
 
     public LevelPlayGameState(
         UIInputHandler uiInputHandler,
-        Timer timer,
-        LevelSharedContext levelSharedContext,
-        TimeControlMediator timeControlMediator) : base(uiInputHandler)
+        PlayPauseService playPauseController,
+        LevelSharedContext levelSharedContext) : base(uiInputHandler)
     {
+        _playPauseController = playPauseController;
         _levelSharedContext = levelSharedContext;
-        _timeControlMediator = timeControlMediator;
-        _timer = timer;
     }
 
-    protected override void EnableInternal()
+    protected override void EnableInternal(object parameter)
     {
-        base.EnableInternal();
+        base.EnableInternal(parameter);
 
-        _levelSharedContext.LevelTimeCounter.SetPaused(false);
-        UpdateTimeState();
+        _playPauseController.EnableService();
+        _playPauseController.Resume();
         
         _levelSharedContext.LevelCompleted += OnLevelCompleted;
-    }
-
-    private void UpdateTimeState()
-    {
-        var remainingTime = _levelSharedContext.LevelTimeCounter.RemainingTime;
-        if (remainingTime > _levelSharedContext.LevelData.LevelHalfDuration)
-        {
-            _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Forward);
-            _timeStateDelayedAction = _timer.Schedule(UpdateTimeState, remainingTime - _levelSharedContext.LevelData.LevelHalfDuration);
-        }
-        else if (remainingTime > 0)
-        {
-            _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Backward);
-            _timeStateDelayedAction = _timer.Schedule(UpdateTimeState, remainingTime);
-        }
-        else
-        {
-            SwitchState(typeof(LevelFailGameState));
-        }
+        _levelSharedContext.LevelFailed += OnLevelFailed;
     }
 
     protected override void DisableInternal()
     {
         base.DisableInternal();
-        _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Paused);
 
-        _timeStateDelayedAction?.Cancel();
+        _playPauseController.Pause();
 
         _levelSharedContext.LevelCompleted -= OnLevelCompleted;
+        _levelSharedContext.LevelFailed -= OnLevelFailed;
+    }
+
+    protected override void OnCancelInputRecieved()
+    {
+        base.OnCancelInputRecieved();
+
+        SwitchState(typeof(LevelPauseGameState));
     }
 
     private void OnLevelCompleted()
@@ -61,10 +45,8 @@
         SwitchState(typeof(LevelCompleteGameState));
     }
 
-    protected override void OnCancelInputRecieved()
+    private void OnLevelFailed()
     {
-        base.OnCancelInputRecieved();
-        _levelSharedContext.LevelTimeCounter.SetPaused(true);
-        SwitchState(typeof(LevelPauseGameState));
+        SwitchState(typeof(LevelFailGameState));
     }
 }

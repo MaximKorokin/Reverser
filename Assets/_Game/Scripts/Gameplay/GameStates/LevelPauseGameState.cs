@@ -7,12 +7,14 @@
     protected override void OnCancelInputRecieved()
     {
         base.OnCancelInputRecieved();
-        SwitchState(typeof(LevelCompleteGameState));
+
+        SwitchState(typeof(LevelCleanupGameState), typeof(MainMenuGameState));
     }
 
     protected override void OnSubmitInputRecieved()
     {
         base.OnSubmitInputRecieved();
+
         SwitchState(typeof(LevelPlayGameState));
     }
 }
