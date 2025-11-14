@@ -1,11 +1,13 @@
 ﻿public class LevelFailGameState : GameState
 {
+    private readonly LevelOverlayService _levelOverlayService;
     private readonly Timer _timer;
 
     public LevelFailGameState(
-        UIInputHandler uiInputHandler,
-        Timer timer) : base(uiInputHandler)
+        LevelOverlayService levelOverlayService,
+        Timer timer)
     {
+        _levelOverlayService = levelOverlayService;
         _timer = timer;
     }
 
@@ -13,13 +15,16 @@
     {
         base.EnableInternal(parameter);
 
-        _timer.Schedule(() => SwitchState(typeof(LevelStartGameState)), 1);
+        _levelOverlayService.EnableService();
+        _levelOverlayService.SetOverlay(LevelOverlayService.OverlayType.LevelFail);
 
-        Logger.Log("=== FAIL ===");
+        _timer.Schedule(() => SwitchState(typeof(LevelStartGameState)), 1);
     }
 
     protected override void DisableInternal()
     {
         base.DisableInternal();
+
+        _levelOverlayService.DisableService();
     }
 }

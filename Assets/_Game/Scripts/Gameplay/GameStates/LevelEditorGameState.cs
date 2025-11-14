@@ -2,7 +2,7 @@
 {
     private readonly LevelEditorController _levelEditorController;
 
-    public LevelEditorGameState(UIInputHandler uiInputHandler, LevelEditorController levelEditorController) : base(uiInputHandler)
+    public LevelEditorGameState(LevelEditorController levelEditorController) 
     {
         _levelEditorController = levelEditorController;
 

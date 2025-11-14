@@ -11,4 +11,9 @@ public static class TimerExtensions
         action1.Then(() => actionsWrapper.Cancel());
         return actionsWrapper;
     }
+
+    public static Timer.DelayedAction SetActiveNextFrame(this GameObject gameObject, bool value, Timer timer)
+    {
+        return timer.Schedule(() => gameObject.SetActive(value), 0);
+    }
 }

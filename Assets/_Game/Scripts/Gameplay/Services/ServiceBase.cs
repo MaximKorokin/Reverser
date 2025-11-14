@@ -7,13 +7,13 @@ public class ServiceBase
     public event Action ServiceEnabled;
     public event Action ServiceDisabled;
 
-    public void EnableService()
+    public virtual void EnableService()
     {
         IsEnabled = true;
         ServiceEnabled?.Invoke();
     }
 
-    public void DisableService()
+    public virtual void DisableService()
     {
         IsEnabled = false;
         ServiceDisabled?.Invoke();

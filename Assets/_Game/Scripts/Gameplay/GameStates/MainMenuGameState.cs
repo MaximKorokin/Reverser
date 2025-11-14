@@ -1,21 +1,17 @@
-﻿using System;
-using UnityEngine;
-
-public class MainMenuGameState : GameState, IDisposable
+﻿public class MainMenuGameState : GameState
 {
-    private readonly LevelSelectionController _levelSelectionController;
+    private readonly LevelSelectionService _levelSelectionService;
     private readonly LevelSharedContext _levelSharedContext;
+    private readonly ExitGameService _exitGameService;
 
     public MainMenuGameState(
-        UIInputHandler uiInputHandler,
-        LevelSelectionController levelSelectionController,
-        LevelSharedContext levelSharedContext) : base(uiInputHandler)
+        LevelSelectionService levelSelectionController,
+        LevelSharedContext levelSharedContext,
+        ExitGameService exitGameService)
     {
-        _levelSelectionController = levelSelectionController;
+        _levelSelectionService = levelSelectionController;
         _levelSharedContext = levelSharedContext;
-
-        _levelSelectionController.GenerateButtons();
-        _levelSelectionController.gameObject.SetActive(false);
+        _exitGameService = exitGameService;
     }
 
     private void OnLevelSelected(LevelData data)
@@ -28,27 +24,20 @@ public class MainMenuGameState : GameState, IDisposable
     {
         base.EnableInternal(parameter);
 
-        _levelSelectionController.gameObject.SetActive(true);
-        _levelSelectionController.LevelSelected -= OnLevelSelected;
-        _levelSelectionController.LevelSelected += OnLevelSelected;
+        _levelSelectionService.EnableService();
+        _levelSelectionService.LevelSelected -= OnLevelSelected;
+        _levelSelectionService.LevelSelected += OnLevelSelected;
+
+        _exitGameService.EnableService();
     }
 
     protected override void DisableInternal()
     {
         base.DisableInternal();
 
-        _levelSelectionController.gameObject.SetActive(false);
-        _levelSelectionController.LevelSelected -= OnLevelSelected;
-    }
+        _levelSelectionService.DisableService();
+        _levelSelectionService.LevelSelected -= OnLevelSelected;
 
-    protected override void OnCancelInputRecieved()
-    {
-        base.OnCancelInputRecieved();
-        Application.Quit();
-    }
-
-    public void Dispose()
-    {
-        _levelSelectionController.LevelSelected -= OnLevelSelected;
+        _exitGameService.DisableService();
     }
 }

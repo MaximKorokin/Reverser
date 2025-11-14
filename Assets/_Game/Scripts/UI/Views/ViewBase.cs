@@ -4,6 +4,8 @@
 
     protected void ConstructBase(ServiceBase service)
     {
+        gameObject.SetActive(true);
+
         _service = service;
 
         _service.ServiceEnabled += EnableViewBase;

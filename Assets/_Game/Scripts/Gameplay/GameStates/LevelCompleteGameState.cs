@@ -1,11 +1,13 @@
 ﻿public class LevelCompleteGameState : GameState
 {
     private readonly Timer _timer;
+    private readonly LevelOverlayService _levelOverlayService;
 
     public LevelCompleteGameState(
-        UIInputHandler uiInputHandler,
-        Timer timer) : base(uiInputHandler)
+        LevelOverlayService levelOverlayService,
+        Timer timer)
     {
+        _levelOverlayService = levelOverlayService;
         _timer = timer;
     }
 
@@ -13,8 +15,16 @@
     {
         base.EnableInternal(parameter);
 
-        _timer.Schedule(() => SwitchState(typeof(LevelCleanupGameState), typeof(MainMenuGameState)), 1);
+        _levelOverlayService.EnableService();
+        _levelOverlayService.SetOverlay(LevelOverlayService.OverlayType.LevelComplete);
 
-        Logger.Log("=== COMPLETE ===");
+        _timer.Schedule(() => SwitchState(typeof(LevelCleanupGameState), typeof(MainMenuGameState)), 1);
+    }
+
+    protected override void DisableInternal()
+    {
+        base.DisableInternal();
+
+        _levelOverlayService.DisableService();
     }
 }

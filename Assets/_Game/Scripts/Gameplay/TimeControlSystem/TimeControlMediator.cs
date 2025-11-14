@@ -8,7 +8,6 @@ public class TimeControlMediator
 
     public TimeControlMediator(TimeControlSettings settings)
     {
-        //TimeFlowMode = settings.InitialTimeFlowMode;
     }
 
     public void SetTimeFlowMode(TimeFlowMode mode)
@@ -17,7 +16,6 @@ public class TimeControlMediator
         {
             TimeFlowModeChanged?.Invoke(TimeFlowMode, mode);
         }
-        //Logger.Log("Time flow changed: " + mode);
         TimeFlowMode = mode;
     }
 }

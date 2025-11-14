@@ -9,9 +9,8 @@ public class LevelCleanupGameState : GameState
     private readonly LevelConstructor _levelConstructor;
 
     public LevelCleanupGameState(
-        UIInputHandler uiInputHandler,
         PlayPauseService playPauseService,
-        LevelConstructor levelConstructor) : base(uiInputHandler)
+        LevelConstructor levelConstructor)
     {
         _playPauseService = playPauseService;
         _levelConstructor = levelConstructor;
