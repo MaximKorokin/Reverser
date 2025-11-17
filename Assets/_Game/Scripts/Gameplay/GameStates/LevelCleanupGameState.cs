@@ -20,7 +20,7 @@ public class LevelCleanupGameState : GameState
     {
         base.EnableInternal(parameter);
 
-        _playPauseService.DisableService();
+        _playPauseService.Disable();
         _levelConstructor.Clear();
 
         if (parameter is Type type && type.IsSubclassOf(typeof(GameState)))

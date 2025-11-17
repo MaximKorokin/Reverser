@@ -1,6 +1,6 @@
 using System;
 
-public class PlayPauseService : ServiceBase
+public class PlayPauseService : UIInputServiceBase
 {
     private readonly TimeControlMediator _timeControlMediator;
     private readonly LevelSharedContext _levelSharedContext;
@@ -8,39 +8,46 @@ public class PlayPauseService : ServiceBase
 
     private Timer.DelayedAction _timeStateDelayedAction;
 
+    public bool IsPaused { get; private set; }
+
     public event Action PlayPaused;
     public event Action PlayResumed;
 
     public PlayPauseService(
+        UIInputHandler inputHandler,
         LevelSharedContext levelSharedContext,
         TimeControlMediator timeControlMediator,
-        Timer timer)
+        Timer timer) : base(inputHandler)
     {
         _levelSharedContext = levelSharedContext;
         _timeControlMediator = timeControlMediator;
         _timer = timer;
     }
 
-    public void Pause()
+    public void Pause(bool silent = false)
     {
         if (!EnsureEnabled(nameof(PlayPauseService))) return;
+
+        IsPaused = true;
 
         _levelSharedContext.LevelTimeCounter.SetPaused(true);
         _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Paused);
 
         _timeStateDelayedAction?.Cancel();
 
-        PlayPaused?.Invoke();
+        if (!silent) PlayPaused?.Invoke();
     }
 
-    public void Resume()
+    public void Resume(bool silent = false)
     {
         if (!EnsureEnabled(nameof(PlayPauseService))) return;
+
+        IsPaused = false;
 
         _levelSharedContext.LevelTimeCounter.SetPaused(false);
         UpdateTimeState();
 
-        PlayResumed?.Invoke();
+        if (!silent) PlayResumed?.Invoke();
     }
 
     private void UpdateTimeState()
@@ -60,5 +67,23 @@ public class PlayPauseService : ServiceBase
         {
             _levelSharedContext.InvokeLevelFailed();
         }
+    }
+
+    public override void Disable()
+    {
+        Pause(true);
+
+        base.Disable();
+    }
+
+    protected override void OnSubmitInputRecieved()
+    {
+
+    }
+
+    protected override void OnCancelInputRecieved()
+    {
+        if (IsPaused) Resume();
+        else Pause();
     }
 }

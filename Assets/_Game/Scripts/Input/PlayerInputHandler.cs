@@ -37,7 +37,7 @@ public class PlayerInputHandler : InputHandler
         InputActions.Player.Interact.performed += OnInteract;
     }
 
-    protected override void UnsubscribeSubscribeFromActions()
+    protected override void UnsubscribeFromActions()
     {
         InputActions.Player.Jump.performed -= OnJump;
 

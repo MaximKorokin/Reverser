@@ -7,20 +7,20 @@
         UIInputHandler = uiInputHandler;
     }
 
-    public override void EnableService()
+    public override void Enable()
     {
         UIInputHandler.Enable();
         UIInputHandler.SubmitInputRecieved += OnSubmitInputRecieved;
         UIInputHandler.CancelInputRecieved += OnCancelInputRecieved;
-        base.EnableService();
+        base.Enable();
     }
 
-    public override void DisableService()
+    public override void Disable()
     {
         UIInputHandler.Disable();
         UIInputHandler.SubmitInputRecieved -= OnSubmitInputRecieved;
         UIInputHandler.CancelInputRecieved -= OnCancelInputRecieved;
-        base.DisableService();
+        base.Disable();
     }
 
     protected abstract void OnSubmitInputRecieved();

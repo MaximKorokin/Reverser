@@ -7,26 +7,26 @@ public abstract class InputHandler : IDisposable
     public InputHandler(InputSystemActions inputActions)
     {
         InputActions = inputActions;
+        InputActions.Enable();
     }
 
     public virtual void Enable()
     {
-        UnsubscribeSubscribeFromActions();
+        UnsubscribeFromActions();
         SubscribeToActions();
-        InputActions.Enable();
     }
 
     public virtual void Disable()
     {
-        UnsubscribeSubscribeFromActions();
-        InputActions.Disable();
+        UnsubscribeFromActions();
     }
 
     public virtual void Dispose()
     {
         Disable();
+        InputActions.Disable();
     }
 
     protected abstract void SubscribeToActions();
-    protected abstract void UnsubscribeSubscribeFromActions();
+    protected abstract void UnsubscribeFromActions();
 }

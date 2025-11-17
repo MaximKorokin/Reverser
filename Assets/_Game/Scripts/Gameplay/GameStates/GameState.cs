@@ -5,6 +5,8 @@ public abstract class GameState
     public bool IsEnabled { get; private set; } = false;
 
     public event Action<GameState, Type, object> SwitchStateRequested;
+    public event Action Enabled;
+    public event Action Disabled;
 
     public bool Disable()
     {
@@ -17,6 +19,8 @@ public abstract class GameState
         IsEnabled = false;
 
         DisableInternal();
+
+        Disabled?.Invoke();
 
         return true;
     }
@@ -34,6 +38,8 @@ public abstract class GameState
         IsEnabled = true;
 
         EnableInternal(parameter);
+
+        Enabled?.Invoke();
 
         return true;
     }

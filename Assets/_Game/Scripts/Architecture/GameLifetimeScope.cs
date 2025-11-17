@@ -62,6 +62,7 @@ public class GameLifetimeScope : LifetimeScope
         builder.Register<ExitGameService>(Lifetime.Scoped);
         builder.Register<PlayPauseService>(Lifetime.Scoped);
         builder.Register<LevelOverlayService>(Lifetime.Scoped);
+        builder.Register<WaitForInputService>(Lifetime.Scoped);
     }
 
     private void RegisterInput(IContainerBuilder builder)
@@ -89,7 +90,6 @@ public class GameLifetimeScope : LifetimeScope
 
         builder.Register<LevelStartGameState>(Lifetime.Scoped);
         builder.Register<LevelPlayGameState>(Lifetime.Scoped);
-        builder.Register<LevelPauseGameState>(Lifetime.Scoped);
         builder.Register<LevelCompleteGameState>(Lifetime.Scoped);
         builder.Register<LevelFailGameState>(Lifetime.Scoped);
         builder.Register<LevelCleanupGameState>(Lifetime.Scoped);

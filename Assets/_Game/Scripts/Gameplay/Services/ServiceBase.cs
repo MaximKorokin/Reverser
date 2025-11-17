@@ -7,18 +7,19 @@ public class ServiceBase
     public event Action ServiceEnabled;
     public event Action ServiceDisabled;
 
-    public virtual void EnableService()
+    public virtual void Enable()
     {
         IsEnabled = true;
         ServiceEnabled?.Invoke();
     }
 
-    public virtual void DisableService()
+    public virtual void Disable()
     {
         IsEnabled = false;
         ServiceDisabled?.Invoke();
     }
 
+    // todo: add this in children where it is required
     protected bool EnsureEnabled(string name)
     {
         if (!IsEnabled) Logger.Warn($"Trying to use disabled service {name}");

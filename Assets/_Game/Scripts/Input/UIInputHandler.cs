@@ -26,7 +26,7 @@ public class UIInputHandler : InputHandler
         InputActions.UI.Cancel.performed += OnCancel;
     }
 
-    protected override void UnsubscribeSubscribeFromActions()
+    protected override void UnsubscribeFromActions()
     {
         InputActions.UI.Submit.performed -= OnSubmit;
         InputActions.UI.Cancel.performed -= OnCancel;
