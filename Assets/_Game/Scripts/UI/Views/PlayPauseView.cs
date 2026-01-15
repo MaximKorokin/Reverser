@@ -11,19 +11,19 @@ public class PlayPauseView : ViewBase
     private Timer _timer;
 
     [Inject]
-    private void Construct(PlayPauseService service, Timer timer)
+    private void Construct(GamePauseService service, Timer timer)
     {
         ConstructBase(service);
 
         _timer = timer;
 
-        service.PlayPaused += OnPlayPaused;
-        service.PlayResumed += OnPlayResumed;
+        service.GamePaused += OnGamePaused;
+        service.GameResumed += OnGameResumed;
 
         OnDestroying += () =>
         {
-            service.PlayPaused -= OnPlayPaused;
-            service.PlayResumed -= OnPlayResumed;
+            service.GamePaused -= OnGamePaused;
+            service.GameResumed -= OnGameResumed;
         };
     }
 
@@ -35,24 +35,24 @@ public class PlayPauseView : ViewBase
         _pauseMenu.SetActive(false);
     }
 
-    protected override void EnableView()
+    protected override void Enable()
     {
         _pauseButton.SetActiveNextFrame(true, _timer);
     }
 
-    protected override void DisableView()
+    protected override void Disable()
     {
         _pauseButton.SetActiveNextFrame(false, _timer);
         _pauseMenu.SetActiveNextFrame(false, _timer);
     }
 
-    private void OnPlayPaused()
+    private void OnGamePaused()
     {
         _pauseButton.SetActiveNextFrame(false, _timer);
         _pauseMenu.SetActiveNextFrame(true, _timer);
     }
 
-    private void OnPlayResumed()
+    private void OnGameResumed()
     {
         _pauseButton.SetActiveNextFrame(true, _timer);
         _pauseMenu.SetActiveNextFrame(false, _timer);

@@ -54,14 +54,16 @@ public class GameLifetimeScope : LifetimeScope
         builder.RegisterComponentInHierarchy<ExitGameView>();
         builder.RegisterComponentInHierarchy<PlayPauseView>();
         builder.RegisterComponentInHierarchy<LevelOverlayView>();
+        builder.RegisterComponentInHierarchy<LevelPlaybackView>();
     }
 
     private void RegisterServices(IContainerBuilder builder)
     {
         builder.Register<LevelSelectionService>(Lifetime.Scoped);
         builder.Register<ExitGameService>(Lifetime.Scoped);
-        builder.Register<PlayPauseService>(Lifetime.Scoped);
+        builder.Register<GamePauseService>(Lifetime.Scoped);
         builder.Register<LevelOverlayService>(Lifetime.Scoped);
+        builder.Register<LevelPlaybackService>(Lifetime.Scoped);
         builder.Register<WaitForInputService>(Lifetime.Scoped);
     }
 

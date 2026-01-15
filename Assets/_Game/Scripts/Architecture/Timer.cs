@@ -1,17 +1,24 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using UnityEngine;
 
 public class Timer : MonoBehaviourBase
 {
     private readonly Dictionary<DelayedAction, CoroutineWrapper> _activeCoroutines = new();
 
+    public DelayedAction ScheduleRepeating(Action callback, float delay, Func<bool> endCondition = null)
+    {
+        var pointer = new DelayedAction(this);
+        _activeCoroutines.Add(pointer, this.StartCoroutineSafe(
+            CoroutinesUtils.Loop(callback, delay, endCondition),
+            () => pointer.Cancel()));
+        return pointer;
+    }
+
     public DelayedAction Schedule(Action callback, float delay)
     {
         var pointer = new DelayedAction(this);
         _activeCoroutines.Add(pointer, this.StartCoroutineSafe(
-            RunTimer(callback, delay),
+            CoroutinesUtils.WaitForSeconds(callback, delay),
             () => pointer.Cancel()));
         return pointer;
     }
@@ -31,12 +38,6 @@ public class Timer : MonoBehaviourBase
         {
             this.StopCoroutine(coroutine);
         }
-    }
-
-    private IEnumerator RunTimer(Action callback, float delay)
-    {
-        yield return new WaitForSeconds(delay);
-        callback?.Invoke();
     }
 
     public class DelayedAction

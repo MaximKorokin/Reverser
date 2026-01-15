@@ -20,12 +20,12 @@ public class LevelSelectionView : ViewBase
         _service = service;
     }
 
-    protected override void EnableView()
+    protected override void Enable()
     {
         _levelDataProvider.Levels.ForEach((_, i) => GenerateLevelButton(i));
     }
 
-    protected override void DisableView()
+    protected override void Disable()
     {
         transform.Cast<Transform>().ForEach(x => Destroy(x.gameObject));
     }

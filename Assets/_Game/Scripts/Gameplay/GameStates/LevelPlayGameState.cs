@@ -3,14 +3,17 @@
     private readonly LevelSharedContext _levelSharedContext;
 
     public LevelPlayGameState(
-        PlayPauseService playPauseController,
+        GamePauseService gamePauseController,
+        LevelPlaybackService levelPlaybackService,
         LevelSharedContext levelSharedContext)
     {
         _levelSharedContext = levelSharedContext;
 
         this.KeepSynchronized(
-            playPauseController,
-            () => playPauseController.Resume());
+            gamePauseController,
+            () => gamePauseController.Resume());
+
+        this.KeepSynchronized(levelPlaybackService);
     }
 
     protected override void EnableInternal(object parameter)

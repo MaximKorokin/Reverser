@@ -42,6 +42,21 @@ public static class CoroutinesUtils
         yield return new WaitForSeconds(seconds);
     }
 
+    public static IEnumerator WaitForSeconds(Action callback, float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        callback?.Invoke();
+    }
+
+    public static IEnumerator Loop(Action callback, float seconds, Func<bool> endCondition)
+    {
+        while (endCondition == null || !endCondition())
+        {
+            callback?.Invoke();
+            yield return new WaitForSeconds(seconds);
+        }
+    }
+
     public static IEnumerator YieldNull()
     {
         yield return null;

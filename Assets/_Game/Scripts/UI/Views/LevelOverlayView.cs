@@ -15,11 +15,7 @@ public class LevelOverlayView : ViewBase
         service.OverlayRequested += OnOverlayRequested;
     }
 
-    protected override void EnableView()
-    {
-    }
-
-    protected override void DisableView()
+    protected override void Disable()
     {
         _overlay.gameObject.SetActive(false);
     }

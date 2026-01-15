@@ -1,6 +1,6 @@
 using System;
 
-public class PlayPauseService : UIInputServiceBase
+public class GamePauseService : UIInputServiceBase
 {
     private readonly TimeControlMediator _timeControlMediator;
     private readonly LevelSharedContext _levelSharedContext;
@@ -10,10 +10,10 @@ public class PlayPauseService : UIInputServiceBase
 
     public bool IsPaused { get; private set; }
 
-    public event Action PlayPaused;
-    public event Action PlayResumed;
+    public event Action GamePaused;
+    public event Action GameResumed;
 
-    public PlayPauseService(
+    public GamePauseService(
         UIInputHandler inputHandler,
         LevelSharedContext levelSharedContext,
         TimeControlMediator timeControlMediator,
@@ -26,7 +26,7 @@ public class PlayPauseService : UIInputServiceBase
 
     public void Pause(bool silent = false)
     {
-        if (!EnsureEnabled(nameof(PlayPauseService))) return;
+        if (!EnsureEnabled(nameof(GamePauseService))) return;
 
         IsPaused = true;
 
@@ -35,19 +35,19 @@ public class PlayPauseService : UIInputServiceBase
 
         _timeStateDelayedAction?.Cancel();
 
-        if (!silent) PlayPaused?.Invoke();
+        if (!silent) GamePaused?.Invoke();
     }
 
     public void Resume(bool silent = false)
     {
-        if (!EnsureEnabled(nameof(PlayPauseService))) return;
+        if (!EnsureEnabled(nameof(GamePauseService))) return;
 
         IsPaused = false;
 
         _levelSharedContext.LevelTimeCounter.SetPaused(false);
         UpdateTimeState();
 
-        if (!silent) PlayResumed?.Invoke();
+        if (!silent) GameResumed?.Invoke();
     }
 
     private void UpdateTimeState()

@@ -5,11 +5,11 @@
 /// </summary>
 public class LevelCleanupGameState : GameState
 {
-    private readonly PlayPauseService _playPauseService;
+    private readonly GamePauseService _playPauseService;
     private readonly LevelConstructor _levelConstructor;
 
     public LevelCleanupGameState(
-        PlayPauseService playPauseService,
+        GamePauseService playPauseService,
         LevelConstructor levelConstructor)
     {
         _playPauseService = playPauseService;

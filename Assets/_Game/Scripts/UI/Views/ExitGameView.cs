@@ -20,13 +20,13 @@ public class ExitGameView : ViewBase
         service.ExitRequested += OnExitRequested;
     }
 
-    protected override void DisableView()
+    protected override void Disable()
     {
         _exitButton.SetActiveNextFrame(false, _timer);
         _exitPanel.SetActiveNextFrame(false, _timer);
     }
 
-    protected override void EnableView()
+    protected override void Enable()
     {
         _exitButton.SetActiveNextFrame(true, _timer);
     }

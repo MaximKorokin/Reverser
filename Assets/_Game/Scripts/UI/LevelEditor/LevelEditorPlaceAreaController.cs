@@ -56,7 +56,6 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
     private void OnPointerDrag(PointerEventData eventData)
     {
         _prompt.gameObject.SetActive(false);
-        // todo: try to calculate offset in world coordinates
         _currentOffset += eventData.delta;
         LevelObjectsSelectableGroup.SelectableElements.ForEach(x => x.RectTransform.anchoredPosition += eventData.delta);
     }

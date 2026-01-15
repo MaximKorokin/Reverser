@@ -20,7 +20,7 @@ public class TimeControlComponentSwitcher : MonoBehaviourBase
     // todo: implement more generic approach
     private void OnTimeFlowModeChanged(TimeFlowMode previousMode, TimeFlowMode newMode)
     {
-        if (previousMode == newMode) return;
+        //if (previousMode == newMode) return;
 
         var enabled = _timeFlowModeInterpretation.InterpretTimeFlowMode(newMode) == TimeFlowMode.Forward;
 

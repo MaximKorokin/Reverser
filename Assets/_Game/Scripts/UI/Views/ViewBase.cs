@@ -1,6 +1,11 @@
-﻿public abstract class ViewBase : UIBehaviourBase
+﻿using System;
+
+public abstract class ViewBase : UIBehaviourBase
 {
     private ServiceBase _service;
+
+    public event Action Enabled;
+    public event Action Disabled;
 
     protected void ConstructBase(ServiceBase service)
     {
@@ -8,26 +13,34 @@
 
         _service = service;
 
-        _service.ServiceEnabled += EnableViewBase;
-        _service.ServiceDisabled += DisableViewBase;
+        _service.ServiceEnabled += EnableBase;
+        _service.ServiceDisabled += DisableBase;
 
         OnDestroying += () =>
         {
-            _service.ServiceEnabled -= EnableViewBase;
-            _service.ServiceDisabled -= DisableViewBase;
+            _service.ServiceEnabled -= EnableBase;
+            _service.ServiceDisabled -= DisableBase;
         };
     }
 
-    private void EnableViewBase()
+    private void EnableBase()
     {
-        if (_service.IsEnabled) EnableView();
+        if (_service.IsEnabled)
+        {
+            Enable();
+            Enabled?.Invoke();
+        }
     }
 
-    private void DisableViewBase()
+    private void DisableBase()
     {
-        if (!_service.IsEnabled) DisableView();
+        if (!_service.IsEnabled)
+        {
+            Disable();
+            Disabled?.Invoke();
+        }
     }
 
-    protected abstract void EnableView();
-    protected abstract void DisableView();
+    protected virtual void Enable() { }
+    protected virtual void Disable() { }
 }
