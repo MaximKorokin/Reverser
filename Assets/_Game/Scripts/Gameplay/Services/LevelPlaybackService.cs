@@ -32,14 +32,14 @@ public class LevelPlaybackService : ServiceBase
 
     public override void Disable()
     {
-        _timeCountingDelayedAction?.Cancel();
+        _timeCountingDelayedAction?.Complete();
 
         base.Disable();
     }
 
     private void OnTimeFlowModeChanged(TimeFlowMode previousMode, TimeFlowMode newMode)
     {
-        _timeCountingDelayedAction?.Cancel();
+        _timeCountingDelayedAction?.Complete();
         if (newMode == TimeFlowMode.Forward)
         {
             _timeCountingDelayedAction = _timer.ScheduleRepeating(InvokeTimeChanged, 0);

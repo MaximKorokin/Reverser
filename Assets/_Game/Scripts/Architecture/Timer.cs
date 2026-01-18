@@ -10,7 +10,7 @@ public class Timer : MonoBehaviourBase
         var pointer = new DelayedAction(this);
         _activeCoroutines.Add(pointer, this.StartCoroutineSafe(
             CoroutinesUtils.Loop(callback, delay, endCondition),
-            () => pointer.Cancel()));
+            () => pointer.Complete()));
         return pointer;
     }
 
@@ -19,7 +19,7 @@ public class Timer : MonoBehaviourBase
         var pointer = new DelayedAction(this);
         _activeCoroutines.Add(pointer, this.StartCoroutineSafe(
             CoroutinesUtils.WaitForSeconds(callback, delay),
-            () => pointer.Cancel()));
+            () => pointer.Complete()));
         return pointer;
     }
 
@@ -28,16 +28,26 @@ public class Timer : MonoBehaviourBase
         var pointer = new DelayedAction(this);
         _activeCoroutines.Add(pointer, this.StartCoroutineSafe(
             CoroutinesUtils.InterpolationCoroutine(currentValueGetter, nextValueSetter, targetValueGetter, time),
-            () => pointer.Cancel()));
+            () => pointer.Complete()));
         return pointer;
     }
 
-    public void Cancel(DelayedAction obj)
+    public DelayedAction Wrap(params DelayedAction[] wrappedActions)
+    {
+        var wrapper = new DelayedAction(this, wrappedActions);
+        _activeCoroutines.Add(wrapper, null);
+        return wrapper;
+    }
+
+    public bool Cancel(DelayedAction obj)
     {
         if (obj != null && _activeCoroutines.TryGetValue(obj, out var coroutine))
         {
-            this.StopCoroutine(coroutine);
+            _activeCoroutines.Remove(obj);
+            if (coroutine != null) this.StopCoroutine(coroutine);
+            return true;
         }
+        return false;
     }
 
     public class DelayedAction
@@ -45,7 +55,7 @@ public class Timer : MonoBehaviourBase
         private readonly Timer _timer;
         private readonly DelayedAction[] _wrappedActions;
 
-        private Action _callback;
+        private readonly List<Action> _callbacks = new();
 
         public DelayedAction(Timer timer, params DelayedAction[] wrappedActions)
         {
@@ -53,17 +63,25 @@ public class Timer : MonoBehaviourBase
             _wrappedActions = wrappedActions;
         }
 
-        public void Then(Action callback)
+        public DelayedAction Then(Action callback)
         {
-            _callback = callback;
+            _callbacks.Add(callback);
+            return this;
+        }
+
+        public void Complete()
+        {
+            if (!_timer.Cancel(this)) return;
+
+            _wrappedActions.ForEach(x => x.Complete());
+            _callbacks?.ForEach(x => x.Invoke());
         }
 
         public void Cancel()
         {
-            _timer.Cancel(this);
-            _wrappedActions.ForEach(x => _timer.Cancel(x));
+            if (!_timer.Cancel(this)) return;
 
-            _callback?.Invoke();
+            _wrappedActions.ForEach(x => x.Cancel());
         }
     }
 }

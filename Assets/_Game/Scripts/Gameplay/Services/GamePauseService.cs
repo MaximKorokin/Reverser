@@ -33,7 +33,7 @@ public class GamePauseService : UIInputServiceBase
         _levelSharedContext.LevelTimeCounter.SetPaused(true);
         _timeControlMediator.SetTimeFlowMode(TimeFlowMode.Paused);
 
-        _timeStateDelayedAction?.Cancel();
+        _timeStateDelayedAction?.Complete();
 
         if (!silent) GamePaused?.Invoke();
     }

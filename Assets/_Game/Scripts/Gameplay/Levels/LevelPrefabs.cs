@@ -16,6 +16,9 @@ public class LevelPrefabs : ScriptableObject
     [LevelPrefabInfo("PickableBox")]
     public Pickable PickableBox { get; private set; }
     [field: SerializeField]
+    [LevelPrefabInfo("PressableGroundButton")]
+    public Pressable PressableGroundButton { get; private set; }
+    [field: SerializeField]
     [LevelPrefabInfo("LevelEndZone")]
     public LevelEndZone LevelEndZone { get; private set; }
 }

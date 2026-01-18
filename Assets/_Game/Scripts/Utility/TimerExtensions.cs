@@ -7,8 +7,8 @@ public static class TimerExtensions
     {
         var action1 = timer.ScheduleInterpolation(() => currentValueGetter().x, x => nextValueSetter(new(x, currentValueGetter().y)), () => targetValueGetter().x, time);
         var action2 = timer.ScheduleInterpolation(() => currentValueGetter().y, y => nextValueSetter(new(currentValueGetter().x, y)), () => targetValueGetter().y, time);
-        var actionsWrapper = new Timer.DelayedAction(timer, action1, action2);
-        action1.Then(() => actionsWrapper.Cancel());
+        var actionsWrapper = timer.Wrap(action1, action2);
+        action1.Then(() => actionsWrapper.Complete());
         return actionsWrapper;
     }
 

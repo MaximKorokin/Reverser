@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 using VContainer;
@@ -33,6 +34,8 @@ public class LevelSelectionView : ViewBase
     private void GenerateLevelButton(int index)
     {
         var button = Instantiate(_buttonPrefab, transform);
+        var level = _levelDataProvider.GetLevelData(index);
+        button.GetComponentInChildren<TMP_Text>().text = level.LevelName;
         button.onClick.AddListener(() => _service.SelectLevel(_levelDataProvider.GetLevelData(index)));
     }
 }
