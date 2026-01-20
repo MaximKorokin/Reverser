@@ -19,6 +19,9 @@ public class LevelPrefabs : ScriptableObject
     [LevelPrefabInfo("PressableGroundButton")]
     public Pressable PressableGroundButton { get; private set; }
     [field: SerializeField]
+    [LevelPrefabInfo("DisappearableWall")]
+    public Disappearable DisappearableWall { get; private set; }
+    [field: SerializeField]
     [LevelPrefabInfo("LevelEndZone")]
     public LevelEndZone LevelEndZone { get; private set; }
 }

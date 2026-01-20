@@ -6,6 +6,9 @@ public static class CoroutinesUtils
 {
     public static CoroutineWrapper StartCoroutineSafe(this MonoBehaviour behaviour, IEnumerator enumerator, Action finalAction = null)
     {
+        // Will not start a coroutine for Behaviour that was deleted and marked "null"
+        if (behaviour == null) return null;
+
         // SafeCoroutine uses wrapper variable, so it is declared before creation
         CoroutineWrapper wrapper = null;
         wrapper = new(behaviour.StartCoroutine(SafeCoroutine()), finalAction);

@@ -12,8 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8550ff6e47a4cc44f8fe27d437478e9c, type: 3}
   m_Name: LevelPrefabs
   m_EditorClassIdentifier: 
-  <LevelGround>k__BackingField: {fileID: 3104661220931976414, guid: 34c6baa9d28a5904783674083af30edf, type: 3}
   <Character1>k__BackingField: {fileID: 8510072030272240532, guid: 6f8ca5ef3cf742c429eb4e196a23211e, type: 3}
   <Character2>k__BackingField: {fileID: 6322988426852879215, guid: 32334914f4cb8ec4eb28f7ed2031ad5b, type: 3}
+  <LevelGround>k__BackingField: {fileID: 3104661220931976414, guid: 34c6baa9d28a5904783674083af30edf, type: 3}
   <PickableBox>k__BackingField: {fileID: 8210413257074962401, guid: 85b571ef52c4f0241afb636fb2fd0ebc, type: 3}
+  <PressableGroundButton>k__BackingField: {fileID: 3864547177758895973, guid: 64c9c763624db1148849347402f2e72d, type: 3}
+  <DisappearableWall>k__BackingField: {fileID: 4615751969252690236, guid: e61b0fdb0f8b7fc44a15fbcb7cd65d3e, type: 3}
   <LevelEndZone>k__BackingField: {fileID: 2464183013942728098, guid: a2ee97dec34aec441981484b2c19f345, type: 3}

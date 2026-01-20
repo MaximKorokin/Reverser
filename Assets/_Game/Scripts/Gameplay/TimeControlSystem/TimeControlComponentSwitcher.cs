@@ -42,6 +42,10 @@ public class TimeControlComponentSwitcher : MonoBehaviourBase
         {
             pickable.enabled = enabled;
         }
+        if (_components.HasFlag(TimeControlBehaviour.Pressable) && TryGetComponent<Pickable>(out var pressable))
+        {
+            pressable.enabled = enabled;
+        }
         if (_components.HasFlag(TimeControlBehaviour.Rigidbody2DSimulated) && TryGetComponent<Rigidbody2D>(out var rigidbody1))
         {
             rigidbody1.simulated = enabled;
@@ -63,5 +67,6 @@ public class TimeControlComponentSwitcher : MonoBehaviourBase
         Pickable = 8,
         Rigidbody2DType = 16,
         Rigidbody2DSimulated = 32,
+        Pressable = 64,
     }
 }

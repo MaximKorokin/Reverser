@@ -40,22 +40,15 @@ public class LevelPrefabsManager
         return true;
     }
 
-    public List<LevelObject> ToLevelObjects(IEnumerable<(GameObject, Vector2)> prefabPositionPairs)
+    public string ToLevelPrefabName(GameObject prefab)
     {
-        var levelObjects = new List<LevelObject>();
-        foreach (var (prefab, position) in prefabPositionPairs)
+        if (!_prefabs.TryGetValue(prefab, out var info))
         {
-            if (!_prefabs.TryGetValue(prefab, out var info))
-            {
-                Logger.Error($"{prefab} is not present in {nameof(LevelPrefabs)}");
-                continue;
-            }
-
-            // avoiding excessive float error (like 3.000000238418579f)
-            var roundedPosition = new Vector2((float)Math.Round(position.x, 2), (float)Math.Round(position.y, 2));
-            levelObjects.Add(new() { Name = info.Name, Position = roundedPosition });
+            Logger.Error($"{prefab} is not present in {nameof(LevelPrefabs)}");
+            return "";
         }
-        return levelObjects;
+
+        return info.Name;
     }
 
     public GameObject ToLevelPrefab(string name)

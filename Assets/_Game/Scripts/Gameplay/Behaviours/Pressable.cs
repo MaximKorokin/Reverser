@@ -1,8 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 using VContainer;
 
-public class Pressable : MonoBehaviourBase
+public class Pressable : MonoBehaviourBase, IStateful
 {
     [SerializeField]
     private Collision2DTriggerDetector _pressableObject;
@@ -13,11 +14,24 @@ public class Pressable : MonoBehaviourBase
     [SerializeField]
     private float _unpressDelayTime;
 
+    private HashSet<Pressing> _pressingObjects = new();
     private Timer.DelayedAction _pressDelayedAction;
     private Vector2 _pressableObjectInitialPosition;
     private Timer _timer;
 
-    public Action<bool> StateChanged;
+    public bool _currentState = false;
+    public bool CurrentState
+    {
+        get => _currentState;
+        private set
+        {
+            if (_currentState == value) return;
+            _currentState = value;
+            StateChanged?.Invoke(_currentState);
+        }
+    }
+
+    public event Action<bool> StateChanged;
 
     [Inject]
     private void Construct(Timer timer)
@@ -37,21 +51,30 @@ public class Pressable : MonoBehaviourBase
 
     private void OnPessed(Collision2D collision)
     {
+        if (!collision.collider.gameObject.TryGetComponent<Pressing>(out var pressingObject)) return;
+
+        _pressingObjects.Add(pressingObject);
+
         _pressDelayedAction?.Cancel();
         _pressDelayedAction = _timer.ScheduleVector2Interpolation(
             () => _pressableObject.transform.position,
             p => _pressableObject.transform.position = p,
             () => _pressableObjectInitialPosition + _pressDelta,
             _pressTime)
-            .Then(() => StateChanged?.Invoke(true));
+            .Then(() => CurrentState = true);
     }
 
     private void OnUnpressed(Collision2D collision)
     {
+        if (!collision.collider.gameObject.TryGetComponent<Pressing>(out var pressingObject)) return;
+
+        _pressingObjects.Remove(pressingObject);
+        if (_pressingObjects.Count > 0) return;
+
         _pressDelayedAction?.Cancel();
         _pressDelayedAction = _timer.Schedule(() =>
         {
-            StateChanged?.Invoke(false);
+            CurrentState = false;
             _pressDelayedAction = _timer.ScheduleVector2Interpolation(
                 () => _pressableObject.transform.position,
                 p => _pressableObject.transform.position = p,

@@ -15,6 +15,16 @@ public class LevelData
 [Serializable]
 public class LevelObject
 {
+    public string Id;
     public string Name;
-    public Vector2 Position;
+    public List<string> Bindings;
+
+    [SerializeField]
+    private Vector2 _position;
+    public Vector2 Position
+    {
+        get => _position;
+        // avoiding excessive float error (like 3.000000238418579f)
+        set => _position = new Vector2((float)Math.Round(value.x, 2), (float)Math.Round(value.y, 2));
+    }
 }

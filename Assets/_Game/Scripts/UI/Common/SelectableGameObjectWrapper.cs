@@ -20,7 +20,7 @@ public class SelectableGameObjectWrapper : SelectableElement
 
     public override void SetSelection(bool selection, bool silent = false)
     {
-        base.SetSelection(selection, silent);
         _backgroundImage.enabled = selection;
+        base.SetSelection(selection, silent);
     }
 }

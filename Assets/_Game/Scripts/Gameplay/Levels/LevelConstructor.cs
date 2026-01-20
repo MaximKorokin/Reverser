@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.ConstrainedExecution;
 using UnityEngine;
 
 public class LevelConstructor
@@ -44,10 +44,39 @@ public class LevelConstructor
 
         if (levelData == null) return;
 
-        foreach(var levelObject in levelData.LevelObjects)
+        var objectsMap = new Dictionary<string, (GameObject GameObject, LevelObject LevelObject)>();
+        foreach (var levelObject in levelData.LevelObjects)
         {
             var prefab = _prefabsManager.ToLevelPrefab(levelObject.Name);
-            _instantiationFactory(prefab, levelObject.Position).transform.SetParent(_levelParent, true);
+            var newObject = _instantiationFactory(prefab, levelObject.Position);
+            newObject.transform.SetParent(_levelParent, true);
+            objectsMap.Add(levelObject.Id ?? Guid.NewGuid().ToString(), (newObject, levelObject));
+        }
+
+        foreach (var (gameObject, levelObject) in objectsMap.Values)
+        {
+            if (levelObject.Bindings != null && levelObject.Bindings.Count > 0)
+            {
+                if (gameObject.TryGetComponent<IStateBindable>(out var bindable))
+                {
+                    foreach (var toBindId in levelObject.Bindings)
+                    {
+                        var toBind = objectsMap[toBindId];
+                        if (toBind.GameObject.TryGetComponent<IStateful>(out var stateful))
+                        {
+                            bindable.Bind(stateful);
+                        }
+                        else
+                        {
+                            Logger.Error($"Object {toBind.LevelObject.Name} with id {toBind.LevelObject.Id} cannot be bound because it does not implement {nameof(IStateful)}");
+                        }
+                    }
+                }
+                else
+                {
+                    Logger.Error($"Object {levelObject.Name} with id {levelObject.Id} has bindings but does not contain {nameof(IStateBindable)}");
+                }
+            }
         }
     }
 }

@@ -46,6 +46,7 @@ public class GameLifetimeScope : LifetimeScope
     {
         builder.RegisterComponentInHierarchy<LevelEditorOpenButton>();
         builder.RegisterComponentInHierarchy<LevelEditorController>();
+        builder.RegisterComponentInHierarchy<LevelEditorPlaceAreaController>();
     }
 
     private void RegisterViews(IContainerBuilder builder)
