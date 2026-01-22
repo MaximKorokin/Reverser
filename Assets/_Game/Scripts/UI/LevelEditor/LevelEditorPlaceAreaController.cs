@@ -119,7 +119,17 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
 
     private void OnBindContextButtonClicked()
     {
-        _selectableBehaviourMode = SelectableBehaviourMode.Bind;
+        var id = _levelObjects[_selectedPlaceGameObjectWrapper].LevelObject.Id;
+        if (_selectedPlaceGameObjectWrapper != null && 
+            (_levelObjects[_selectedPlaceGameObjectWrapper].LevelObject.Bindings?.Count > 0 || _levelObjects.Any(x => x.Value.LevelObject.Bindings.Contains(id))))
+        {
+            UnbindSelectable(_selectedPlaceGameObjectWrapper);
+            _selectableBehaviourMode = SelectableBehaviourMode.Select;
+        }
+        else
+        {
+            _selectableBehaviourMode = SelectableBehaviourMode.Bind;
+        }
     }
 
     private void OnToggleContextButtonClicked()
@@ -199,9 +209,9 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
         {
             if (levelObject.Bindings?.Count > 0)
             {
-                subImagesController.Set(0, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(bindsCount));
+                subImagesController.Set(BindSubImageIndex, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(bindsCount));
                 var binded = _levelObjects.First(x => x.Value.LevelObject.Id == levelObject.Bindings[0]).Value.SubImagesController;
-                binded.Set(0, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(bindsCount));
+                binded.Set(BindSubImageIndex, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(bindsCount));
                 bindsCount++;
             }
 
@@ -244,8 +254,35 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
 
         var activeBindingsAmount = _levelObjects.Count(x => x.Value.LevelObject.Bindings?.Count > 0);
 
-        _levelObjects[selectable1].SubImagesController.Set(0, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(activeBindingsAmount - 1));
-        _levelObjects[selectable2].SubImagesController.Set(0, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(activeBindingsAmount - 1));
+        _levelObjects[selectable1].SubImagesController.Set(BindSubImageIndex, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(activeBindingsAmount - 1));
+        _levelObjects[selectable2].SubImagesController.Set(BindSubImageIndex, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(activeBindingsAmount - 1));
+    }
+
+    private void UnbindSelectable(SelectableGameObjectWrapper selectable)
+    {
+        SelectableGameObjectWrapper secondSelectable = null;
+
+        if (selectable.WrappedGameObject.TryGetComponent<IStateBindable>(out var bindable)) 
+        {
+            var secondId = _levelObjects[selectable].LevelObject.Bindings[0];
+            secondSelectable = _levelObjects.First(x => x.Value.LevelObject.Id == secondId).Key;
+            _levelObjects[selectable].LevelObject.Bindings.Clear();
+        }
+        else if (selectable.WrappedGameObject.TryGetComponent<IStateful>(out var stateful))
+        {
+            var firstId = _levelObjects[selectable].LevelObject.Id;
+            secondSelectable = _levelObjects.First(x => x.Value.LevelObject.Bindings.Contains(firstId)).Key;
+            _levelObjects[secondSelectable].LevelObject.Bindings.Clear();
+        }
+
+        if (secondSelectable == null)
+        {
+            Logger.Warn($"Cannot unbind {selectable.WrappedGameObject}");
+            return;
+        }
+
+        _levelObjects[selectable].SubImagesController.Set(BindSubImageIndex, null, default);
+        _levelObjects[secondSelectable].SubImagesController.Set(BindSubImageIndex, null, default);
     }
 
     private enum SelectableBehaviourMode

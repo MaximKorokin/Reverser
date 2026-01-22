@@ -9,7 +9,7 @@ public static class ColorUtils
 
     public static Color GetUniversalIndexedColor(int index)
     {
-        if (index > _universalIndexedColors.Length - 1)
+        if (index < 0 || index > _universalIndexedColors.Length - 1)
         {
             Logger.Warn($"{nameof(index)} is outside of universal colors bounds");
             index %= _universalIndexedColors.Length;
