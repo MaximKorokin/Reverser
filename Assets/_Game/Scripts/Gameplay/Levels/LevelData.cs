@@ -17,6 +17,7 @@ public class LevelObject
 {
     public string Id;
     public string Name;
+    public bool ToggleBind;
     public List<string> Bindings;
 
     [SerializeField]

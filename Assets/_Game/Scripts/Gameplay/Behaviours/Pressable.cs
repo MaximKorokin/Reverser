@@ -51,6 +51,8 @@ public class Pressable : MonoBehaviourBase, IStateful
 
     private void OnPessed(Collision2D collision)
     {
+        if (!this || !gameObject) return;
+
         if (!collision.collider.gameObject.TryGetComponent<Pressing>(out var pressingObject)) return;
 
         _pressingObjects.Add(pressingObject);
@@ -66,6 +68,8 @@ public class Pressable : MonoBehaviourBase, IStateful
 
     private void OnUnpressed(Collision2D collision)
     {
+        if (!this || !gameObject) return;
+
         if (!collision.collider.gameObject.TryGetComponent<Pressing>(out var pressingObject)) return;
 
         _pressingObjects.Remove(pressingObject);
@@ -81,5 +85,12 @@ public class Pressable : MonoBehaviourBase, IStateful
                 () => _pressableObjectInitialPosition,
                 _pressTime);
         }, _unpressDelayTime);
+    }
+
+    protected override void OnDestroy()
+    {
+        base.OnDestroy();
+
+        _pressDelayedAction?.Cancel();
     }
 }

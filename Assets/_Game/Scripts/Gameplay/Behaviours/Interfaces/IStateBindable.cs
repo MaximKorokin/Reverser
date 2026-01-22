@@ -7,4 +7,6 @@
     }
 
     public void OnStateChanged(bool state);
+
+    public void SetBindInterpretation(bool inversed);
 }

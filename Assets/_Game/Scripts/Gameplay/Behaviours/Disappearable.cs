@@ -7,6 +7,9 @@ public class Disappearable : MonoBehaviourBase, IStateBindable
     private Collider2D _collider2D;
     private Timer _timer;
 
+    private bool _inverseState;
+    private bool _lastState;
+
     [Inject]
     private void Construct(Timer timer)
     {
@@ -23,7 +26,18 @@ public class Disappearable : MonoBehaviourBase, IStateBindable
 
     public void OnStateChanged(bool state)
     {
-        _collider2D.enabled = state;
+        if (!this || !gameObject) return;
+
+        _lastState = state;
+        if (_inverseState) state = !state;
+
+        _collider2D.isTrigger = !state;
         _spriteRenderer.color = new(_spriteRenderer.color.r, _spriteRenderer.color.g, _spriteRenderer.color.b, state ? 1 : 0.2f);
+    }
+
+    public void SetBindInterpretation(bool inversed)
+    {
+        _inverseState = inversed;
+        OnStateChanged(_lastState);
     }
 }

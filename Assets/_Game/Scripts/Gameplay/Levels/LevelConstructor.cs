@@ -55,9 +55,11 @@ public class LevelConstructor
 
         foreach (var (gameObject, levelObject) in objectsMap.Values)
         {
+            var bindable = gameObject.GetComponent<IStateBindable>();
+
             if (levelObject.Bindings != null && levelObject.Bindings.Count > 0)
             {
-                if (gameObject.TryGetComponent<IStateBindable>(out var bindable))
+                if (bindable != null)
                 {
                     foreach (var toBindId in levelObject.Bindings)
                     {
@@ -76,6 +78,11 @@ public class LevelConstructor
                 {
                     Logger.Error($"Object {levelObject.Name} with id {levelObject.Id} has bindings but does not contain {nameof(IStateBindable)}");
                 }
+            }
+
+            if (bindable != null)
+            {
+                bindable.SetBindInterpretation(levelObject.ToggleBind);
             }
         }
     }

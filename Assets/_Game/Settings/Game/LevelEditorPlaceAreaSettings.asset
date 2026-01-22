@@ -1,0 +1,17 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 36f314504034ad344b413cc6531c0dc0, type: 3}
+  m_Name: LevelEditorPlaceAreaSettings
+  m_EditorClassIdentifier: 
+  <SelectableSubImageBindSprite>k__BackingField: {fileID: -2413806693520163455, guid: 3f63d65663c180348a5e232c70e1a889, type: 3}
+  <SelectableSubImageToggleOnSprite>k__BackingField: {fileID: 7482667652216324306, guid: 35b8dfc19db33e349b46e4fd6ee204aa, type: 3}
+  <SelectableSubImageToggleOffSprite>k__BackingField: {fileID: 7482667652216324306, guid: c51d586e87ac4b44ca6a31b5bc369988, type: 3}

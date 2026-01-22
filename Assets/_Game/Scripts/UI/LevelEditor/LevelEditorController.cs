@@ -53,7 +53,7 @@ public class LevelEditorController : MonoBehaviourBase
     private void SetLevelData(LevelData levelData)
     {
         _levelEditorPlaceAreaController.ResetState();
-        _levelEditorPlaceAreaController.SetPositionedPrefabs(levelData.LevelObjects.Select(x => (_prefabsManager.ToLevelPrefab(x.Name), x.Id, x.Position)));
+        _levelEditorPlaceAreaController.SetLevelData(levelData);
         _levelEditorInfoAreaController.SetLevelData(levelData);
     }
 

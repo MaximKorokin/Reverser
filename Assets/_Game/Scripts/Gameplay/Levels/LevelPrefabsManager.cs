@@ -1,63 +1,37 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using UnityEngine;
 
 public class LevelPrefabsManager
 {
-    private readonly Dictionary<GameObject, LevelPrefabInfoAttribute> _prefabs = new();
+    private readonly List<GameObject> _prefabs = new();
 
-    public IEnumerable<GameObject> Prefabs => _prefabs.Keys;
+    public IEnumerable<GameObject> Prefabs => _prefabs;
 
     public LevelPrefabsManager(LevelPrefabs levelPrefabs)
     {
-        foreach (var (info, value) in levelPrefabs
-            .GetType()
-            .GetAllProperties(flags: BindingFlags.DeclaredOnly | BindingFlags.Public | BindingFlags.Instance)
-            .Select(x => (info: x.GetCustomAttribute(typeof(LevelPrefabInfoAttribute)), value: x.GetValue(levelPrefabs)))
-            .Where(x => x.value is Component or GameObject))
-        {
-            GameObject gameObject;
-            if (value is GameObject obj) gameObject = obj;
-            else if (value is Component component) gameObject = component.gameObject;
-            else gameObject = null;
-
-            _prefabs.Add(gameObject, info as LevelPrefabInfoAttribute);
-        }
-    }
-
-    public bool IsValidLevel(IEnumerable<GameObject> gameObjects)
-    {
-        foreach (var gameObject in gameObjects)
-        {
-            if (!_prefabs.TryGetValue(gameObject, out var info))
-            {
-                Logger.Error($"{gameObject} is not present in {nameof(LevelPrefabs)}");
-                continue;
-            }
-        }
-        return true;
+        _prefabs = levelPrefabs.ToList();
     }
 
     public string ToLevelPrefabName(GameObject prefab)
     {
-        if (!_prefabs.TryGetValue(prefab, out var info))
+        var obj = _prefabs.FirstOrDefault(x => x == prefab);
+        if (obj == null)
         {
             Logger.Error($"{prefab} is not present in {nameof(LevelPrefabs)}");
             return "";
         }
 
-        return info.Name;
+        return obj.name;
     }
 
     public GameObject ToLevelPrefab(string name)
     {
-        var prefab = _prefabs.FirstOrDefault(x => x.Value.Name == name);
-        if (prefab.Key == null)
+        var prefab = _prefabs.FirstOrDefault(x => x.name == name);
+        if (prefab == null)
         {
             Logger.Error($"{name} is not present in {nameof(LevelPrefabs)}");
         }
-        return prefab.Key;
+        return prefab;
     }
 }

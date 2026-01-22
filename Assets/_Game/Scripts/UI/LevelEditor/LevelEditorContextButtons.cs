@@ -11,12 +11,12 @@ public class LevelEditorContextButtons : UIBehaviourBase
     [SerializeField]
     private Button _bindButton;
     [SerializeField]
-    private Button _unbindButton;
+    private Button _toggleButton;
 
     public event Action RemoveButtonClicked;
     public event Action MoveButtonClicked;
     public event Action BindButtonClicked;
-    public event Action UnbindButtonClicked;
+    public event Action ToggleButtonClicked;
 
     protected override void Awake()
     {
@@ -40,9 +40,9 @@ public class LevelEditorContextButtons : UIBehaviourBase
             Hide();
         });
 
-        _unbindButton.onClick.AddListener(() =>
+        _toggleButton.onClick.AddListener(() =>
         {
-            UnbindButtonClicked?.Invoke();
+            ToggleButtonClicked?.Invoke();
             Hide();
         });
     }
@@ -52,10 +52,13 @@ public class LevelEditorContextButtons : UIBehaviourBase
         base.Show();
         _removeButton.gameObject.SetActive(true);
         _moveButton.gameObject.SetActive(true);
-        if (gameObject.GetComponent<IStateBindable>() != null)
+        if (gameObject.GetComponent<IStateBindable>() != null || gameObject.GetComponent<IStateful>() != null)
         {
             _bindButton.gameObject.SetActive(true);
-            _unbindButton.gameObject.SetActive(true);
+        }
+        if (gameObject.GetComponent<IStateBindable>() != null)
+        {
+            _toggleButton.gameObject.SetActive(true);
         }
     }
 
@@ -66,6 +69,6 @@ public class LevelEditorContextButtons : UIBehaviourBase
         _removeButton.gameObject.SetActive(false);
         _moveButton.gameObject.SetActive(false);
         _bindButton.gameObject.SetActive(false);
-        _unbindButton.gameObject.SetActive(false);
+        _toggleButton.gameObject.SetActive(false);
     }
 }

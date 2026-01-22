@@ -42,9 +42,13 @@ public class TimeControlComponentSwitcher : MonoBehaviourBase
         {
             pickable.enabled = enabled;
         }
-        if (_components.HasFlag(TimeControlBehaviour.Pressable) && TryGetComponent<Pickable>(out var pressable))
+        if (_components.HasFlag(TimeControlBehaviour.Pressable) && TryGetComponent<Pressable>(out var pressable))
         {
             pressable.enabled = enabled;
+        }
+        if (_components.HasFlag(TimeControlBehaviour.Disappearable) && TryGetComponent<Disappearable>(out var disappearable))
+        {
+            disappearable.enabled = enabled;
         }
         if (_components.HasFlag(TimeControlBehaviour.Rigidbody2DSimulated) && TryGetComponent<Rigidbody2D>(out var rigidbody1))
         {
@@ -68,5 +72,6 @@ public class TimeControlComponentSwitcher : MonoBehaviourBase
         Rigidbody2DType = 16,
         Rigidbody2DSimulated = 32,
         Pressable = 64,
+        Disappearable = 128,
     }
 }

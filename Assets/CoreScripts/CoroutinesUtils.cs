@@ -7,7 +7,7 @@ public static class CoroutinesUtils
     public static CoroutineWrapper StartCoroutineSafe(this MonoBehaviour behaviour, IEnumerator enumerator, Action finalAction = null)
     {
         // Will not start a coroutine for Behaviour that was deleted and marked "null"
-        if (behaviour == null) return null;
+        if (!behaviour || !behaviour.gameObject) return null;
 
         // SafeCoroutine uses wrapper variable, so it is declared before creation
         CoroutineWrapper wrapper = null;
@@ -26,9 +26,15 @@ public static class CoroutinesUtils
                 yield return null;
             }
 
+            // Will stop coroutine for Behaviour that was deleted and marked "null"
+            if (!behaviour || !behaviour.gameObject) yield break;
+
             while (enumerator.MoveNext())
             {
                 yield return enumerator.Current;
+
+                // Will stop coroutine for Behaviour that was deleted and marked "null"
+                if (!behaviour || !behaviour.gameObject) yield break;
             }
             wrapper.Stop();
         }
@@ -36,7 +42,7 @@ public static class CoroutinesUtils
 
     public static void StopCoroutine(this MonoBehaviour behaviour, CoroutineWrapper wrapper)
     {
-        behaviour.StopCoroutine(wrapper.Coroutine);
+        if (behaviour != null) behaviour.StopCoroutine(wrapper.Coroutine);
         wrapper.Stop();
     }
 

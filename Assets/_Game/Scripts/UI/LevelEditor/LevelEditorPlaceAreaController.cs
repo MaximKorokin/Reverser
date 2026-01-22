@@ -7,6 +7,11 @@ using VContainer;
 
 public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaController
 {
+    private const int BindSubImageIndex = 0;
+    private const int ToggleSubImageIndex = 2;
+
+    [SerializeField]
+    private LevelEditorPlaceAreaSettings _settings;
     [SerializeField]
     private PointerEventsHandler _pointerEventsHandler;
     [SerializeField]
@@ -16,7 +21,7 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
 
     private SnapPlacer SnapPlacer => GetLazy(() => new SnapPlacer(1, RectTransform));
 
-    private readonly Dictionary<SelectableGameObjectWrapper, LevelObject> _levelObjects = new();
+    private readonly Dictionary<SelectableGameObjectWrapper, (LevelObject LevelObject, SubImagesController SubImagesController)> _levelObjects = new();
 
     private SelectableGameObjectWrapper _selectedPlaceGameObjectWrapper;
     private GameObject _placePrefab;
@@ -42,7 +47,7 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
         _levelEditorContextButtons.RemoveButtonClicked += OnRemoveContextButtonClicked;
         _levelEditorContextButtons.MoveButtonClicked += OnMoveContextButtonClicked;
         _levelEditorContextButtons.BindButtonClicked += OnBindContextButtonClicked;
-        _levelEditorContextButtons.UnbindButtonClicked += OnUnbindContextButtonClicked;
+        _levelEditorContextButtons.ToggleButtonClicked += OnToggleContextButtonClicked;
 
         _levelEditorContextButtons.OnHidden += OnContextButtonsHidden;
 
@@ -51,11 +56,11 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
         _selectableBehaviourMode = SelectableBehaviourMode.Select;
     }
 
-    protected SelectableGameObjectWrapper CreateSelectableGameObjectWrapper(GameObject toWrap, string id, Vector2 worldPosition)
+    protected SelectableGameObjectWrapper CreateSelectableGameObjectWrapper(LevelObject levelObject)
     {
-        var wrapper = base.CreateSelectableGameObjectWrapper(toWrap);
-        _levelObjects.Add(wrapper, new() { Name = _prefabsManager.ToLevelPrefabName(toWrap), Id = id });
-        PlaceSnapped(wrapper.RectTransform, worldPosition);
+        var wrapper = base.CreateSelectableGameObjectWrapper(_prefabsManager.ToLevelPrefab(levelObject.Name));
+        _levelObjects.Add(wrapper, (levelObject, wrapper.GetRequiredComponent<SubImagesController>()));
+        PlaceSnapped(wrapper.RectTransform, levelObject.Position);
         return wrapper;
     }
 
@@ -89,7 +94,8 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
             case SelectableBehaviourMode.Select:
                 if (_placePrefab != null)
                 {
-                    CreateSelectableGameObjectWrapper(_placePrefab, Guid.NewGuid().ToString(), eventData.pointerCurrentRaycast.worldPosition);
+                    var levelObject = new LevelObject() { Name = _prefabsManager.ToLevelPrefabName(_placePrefab), Id = Guid.NewGuid().ToString(), Position = eventData.pointerCurrentRaycast.worldPosition };
+                    CreateSelectableGameObjectWrapper(levelObject);
                 }
                 break;
             case SelectableBehaviourMode.Move:
@@ -116,9 +122,13 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
         _selectableBehaviourMode = SelectableBehaviourMode.Bind;
     }
 
-    private void OnUnbindContextButtonClicked()
+    private void OnToggleContextButtonClicked()
     {
-        _selectableBehaviourMode = SelectableBehaviourMode.Bind;
+        if (_selectedPlaceGameObjectWrapper == null) return;
+        var (levelObject, subImagesController) = _levelObjects[_selectedPlaceGameObjectWrapper];
+        levelObject.ToggleBind = !levelObject.ToggleBind;
+
+        subImagesController.Set(ToggleSubImageIndex, levelObject.ToggleBind ? _settings.SelectableSubImageToggleOnSprite : _settings.SelectableSubImageToggleOffSprite, Color.gray);
     }
 
     private void OnContextButtonsHidden()
@@ -154,16 +164,8 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
             case SelectableBehaviourMode.Bind:
                 _selectableBehaviourMode = SelectableBehaviourMode.Select;
                 if (selectable == null || _selectedPlaceGameObjectWrapper == null) return;
-                if (_selectedPlaceGameObjectWrapper.WrappedGameObject.GetComponent<IStateBindable>() == null || selectable.WrappedGameObject.GetComponent<IStateful>() == null)
-                {
-                    Logger.Warn($"Cannot bind {_selectedPlaceGameObjectWrapper.WrappedGameObject} to {selectable.WrappedGameObject}");
-                    return;
-                }
-
-                var levelObjectToBind = _levelObjects[selectable];
-                var bindableLevelObject = _levelObjects[_selectedPlaceGameObjectWrapper];
-                bindableLevelObject.Bindings ??= new();
-                bindableLevelObject.Bindings.Add(levelObjectToBind.Id);
+                BindSelectables(selectable, _selectedPlaceGameObjectWrapper);
+                _selectedPlaceGameObjectWrapper.SetSelection(false);
                 break;
         }
     }
@@ -178,22 +180,41 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
         var worldOffset = _currentOffset / Camera.main.GetUnitScreenSize(Canvas.scaleFactor);
         return LevelObjectsSelectableGroup.SelectableElements.Select(wrapper =>
         {
-            var levelObject = _levelObjects[wrapper];
+            var levelObject = _levelObjects[wrapper].LevelObject;
             levelObject.Position = (Vector2)wrapper.transform.position - worldOffset;
             return levelObject;
         });
     }
 
-    public void SetPositionedPrefabs(IEnumerable<(GameObject, string, Vector2)> positionedPrefabs)
+    public void SetLevelData(LevelData levelData)
     {
-        foreach (var (prefab, id, position) in positionedPrefabs)
+        //levelData.LevelObjects.Select(x => (_prefabsManager.ToLevelPrefab(x.Name), x.Id, x.Position))
+        foreach (var levelObject in levelData.LevelObjects)
         {
-            CreateSelectableGameObjectWrapper(prefab, id, position);
+            CreateSelectableGameObjectWrapper(levelObject);
+        }
+
+        int bindsCount = 0;
+        foreach (var (wrapper, (levelObject, subImagesController)) in _levelObjects)
+        {
+            if (levelObject.Bindings?.Count > 0)
+            {
+                subImagesController.Set(0, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(bindsCount));
+                var binded = _levelObjects.First(x => x.Value.LevelObject.Id == levelObject.Bindings[0]).Value.SubImagesController;
+                binded.Set(0, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(bindsCount));
+                bindsCount++;
+            }
+
+            if (wrapper.WrappedGameObject.GetComponent<IStateBindable>() != null)
+            {
+                subImagesController.Set(ToggleSubImageIndex, levelObject.ToggleBind ? _settings.SelectableSubImageToggleOnSprite : _settings.SelectableSubImageToggleOffSprite, Color.gray);
+            }
         }
     }
 
     public void ResetState()
     {
+        _levelObjects.Clear();
         _currentOffset = Vector2.zero;
         LevelObjectsSelectableGroup.SelectableElements
             .ToArray()
@@ -202,6 +223,29 @@ public class LevelEditorPlaceAreaController : LevelEditorSelectableAreaControlle
                 LevelObjectsSelectableGroup.RemoveSelectable(selectable);
                 Destroy(selectable.gameObject);
             });
+    }
+
+    private void BindSelectables(SelectableGameObjectWrapper selectable1, SelectableGameObjectWrapper selectable2)
+    {
+        var toChoseFrom = new SelectableGameObjectWrapper[] { selectable1, selectable2 };
+        var stateful = toChoseFrom.FirstOrDefault(x => x.WrappedGameObject.GetComponent<IStateful>() != null);
+        var bindable = toChoseFrom.FirstOrDefault(x => x.WrappedGameObject.GetComponent<IStateBindable>() != null);
+
+        if (stateful == null || bindable == null)
+        {
+            Logger.Warn($"Cannot bind {selectable2.WrappedGameObject} and {selectable1.WrappedGameObject}");
+            return;
+        }
+
+        var statefulLevelObject = _levelObjects[stateful].LevelObject;
+        var bindableLevelObject = _levelObjects[bindable].LevelObject;
+        if (bindableLevelObject.Bindings != null && bindableLevelObject.Bindings.Contains(statefulLevelObject.Id)) bindableLevelObject.Bindings.Remove(statefulLevelObject.Id);
+        else bindableLevelObject.Bindings = new() { statefulLevelObject.Id };
+
+        var activeBindingsAmount = _levelObjects.Count(x => x.Value.LevelObject.Bindings?.Count > 0);
+
+        _levelObjects[selectable1].SubImagesController.Set(0, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(activeBindingsAmount - 1));
+        _levelObjects[selectable2].SubImagesController.Set(0, _settings.SelectableSubImageBindSprite, ColorUtils.GetUniversalIndexedColor(activeBindingsAmount - 1));
     }
 
     private enum SelectableBehaviourMode
